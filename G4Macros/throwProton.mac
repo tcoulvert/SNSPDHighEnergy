@@ -45,8 +45,8 @@
 /gps/number 1
 /gps/particle proton
 /gps/pos/type Point
-/gps/direction 0 -0.7 -1
-/gps/pos/centre 0.0 0.5 0.56 cm # A bit above the chip top
+/gps/direction 0 0 -1
+/gps/pos/centre 0.0 0.0 0.0 cm  # Middle of the chip
 /gps/ene/type Mono
 /gps/energy 120 GeV
 /run/beamOn 1
