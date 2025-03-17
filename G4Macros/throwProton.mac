@@ -18,7 +18,7 @@
 
 # Make phonon polarization modes distinguishable
 /vis/modeling/trajectories/create/drawByParticleID
-/vis/modeling/trajectories/drawByParticleID-0/set mu- White
+/vis/modeling/trajectories/drawByParticleID-0/set proton White
 /vis/modeling/trajectories/drawByParticleID-0/set e- Yellow
 /vis/modeling/trajectories/drawByParticleID-0/set G4CMPDriftElectron Violet
 /vis/modeling/trajectories/drawByParticleID-0/set G4CMPDriftHole Orange
