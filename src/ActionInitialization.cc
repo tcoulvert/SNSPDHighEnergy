@@ -9,9 +9,13 @@
 #include "PrimaryGeneratorAction.hh"
 #include "SteppingAction.hh"
 #include "G4CMPStackingAction.hh"
+#include "EventAction.hh"
+#include "RunAction.hh"
 
 void ActionInitialization::Build() const {
   SetUserAction(new PrimaryGeneratorAction);
   SetUserAction(new G4CMPStackingAction);
   SetUserAction(new SteppingAction);
+  SetUserAction(new EventAction);
+  SetUserAction(new RunAction);
 } 
