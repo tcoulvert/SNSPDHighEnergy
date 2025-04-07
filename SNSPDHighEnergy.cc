@@ -32,7 +32,7 @@
 
 using namespace DetectorParameters;
 
-int main(int argc,char** argv)
+int main(int argc, char** argv)
 {
   MyG4Args* myG4Args = new MyG4Args(argc, argv);
  // Construct the run manager
@@ -57,29 +57,50 @@ int main(int argc,char** argv)
  G4CMPConfigManager::Instance();
  ConfigManager::Instance();
 
- // Visualization manager
- //
- G4VisManager* visManager = new G4VisExecutive;
- visManager->Initialize();
- 
- // Get the pointer to the User Interface manager
- //
- G4UImanager* UImanager = G4UImanager::GetUIpointer();  
-
  if (argc==1)   // Define UI session for interactive mode
  {
-      G4UIExecutive * ui = new G4UIExecutive(argc,argv);
-      ui->SessionStart();
-      delete ui;
- }
- else           // Batch mode
+
+  // Initialize the visualization manager
+  G4VisManager *visManager = new G4VisExecutive();
+  visManager->Initialize();
+
+  // Get the UI manager and apply visualization commands
+  G4UImanager *UImanager = G4UImanager::GetUIpointer();
+
+  G4UIExecutive* ui = new G4UIExecutive(argc, argv);
+  ui->SessionStart();
+  delete ui;
+
+  delete visManager;
+  delete UImanager;
+
+ } else if (myG4Args->GetRunevt() > 0) 
  {
-   G4String command = "/control/execute ";
-   G4String fileName = argv[1];
-   UImanager->ApplyCommand(command+fileName);
+
+  // Run the specified number of events
+  G4int numberOfEvents = myG4Args->GetRunevt();
+  G4cout << "### Running " << numberOfEvents << " events." << G4endl;
+  runManager->BeamOn(numberOfEvents);
+
+ } else           // Batch mode
+ {
+
+  // Initialize the visualization manager
+  G4VisManager *visManager = new G4VisExecutive();
+  visManager->Initialize();
+
+  // Get the UI manager and apply visualization commands
+  G4UImanager *UImanager = G4UImanager::GetUIpointer();
+
+  G4String command = "/control/execute ";
+  G4String fileName = argv[1];
+  UImanager->ApplyCommand(command+fileName);
+
+  delete visManager;
+  delete UImanager;
+
  }
 
- delete visManager;
  delete runManager;
 
  return 0;

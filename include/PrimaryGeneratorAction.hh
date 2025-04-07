@@ -14,6 +14,7 @@
 
 #include "G4VUserPrimaryGeneratorAction.hh"
 #include "globals.hh"
+#include "G4Args.hh"
 
 
 class G4ParticleGun;
@@ -23,14 +24,15 @@ class G4Event;
 class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
 public:
-  PrimaryGeneratorAction();    
+  PrimaryGeneratorAction(MyG4Args* MainArgs);    
   virtual ~PrimaryGeneratorAction();
 
   public:
     virtual void GeneratePrimaries(G4Event*);
 
   private:
-    G4GeneralParticleSource*                fParticleGun;
+    G4GeneralParticleSource* fParticleGun;
+    MyG4Args* PassArgs;
 
 };
 

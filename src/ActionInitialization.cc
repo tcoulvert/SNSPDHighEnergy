@@ -19,7 +19,7 @@ ActionInitialization::~ActionInitialization() {
 }
 
 void ActionInitialization::Build() const {
-  SetUserAction(new PrimaryGeneratorAction);
+  SetUserAction(new PrimaryGeneratorAction(PassArgs));
   SetUserAction(new G4CMPStackingAction);
   SetUserAction(new SteppingAction);
   
