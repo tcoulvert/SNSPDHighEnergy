@@ -34,6 +34,7 @@ using namespace DetectorParameters;
 
 int main(int argc,char** argv)
 {
+  MyG4Args* myG4Args = new MyG4Args(argc, argv);
  // Construct the run manager
  //
  G4RunManager* runManager = new G4RunManager;
@@ -50,7 +51,7 @@ int main(int argc,char** argv)
  
  // Set user action classes (different for Geant4 10.0)
  //
- runManager->SetUserInitialization(new ActionInitialization);
+ runManager->SetUserInitialization(new ActionInitialization(myG4Args));
 
  // Create configuration managers to ensure macro commands exist
  G4CMPConfigManager::Instance();

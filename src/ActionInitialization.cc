@@ -12,10 +12,18 @@
 #include "EventAction.hh"
 #include "RunAction.hh"
 
+ActionInitialization::ActionInitialization(MyG4Args *MainArgs) {
+  PassArgs = MainArgs;
+}
+ActionInitialization::~ActionInitialization() {
+}
+
 void ActionInitialization::Build() const {
   SetUserAction(new PrimaryGeneratorAction);
   SetUserAction(new G4CMPStackingAction);
   SetUserAction(new SteppingAction);
-  SetUserAction(new EventAction);
-  SetUserAction(new RunAction);
+  
+  RunAction* runAction = new RunAction(PassArgs);
+  SetUserAction(new EventAction(runAction, PassArgs));
+  SetUserAction(runAction);
 } 
