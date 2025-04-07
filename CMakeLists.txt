@@ -51,6 +51,7 @@ set(SNSPDHighEnergy_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/G4Args.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/src/RunAction.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/src/EventAction.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SensitiveDetector.cc
     )
     
 if(USE_GEANT4_STATIC_LIBS)
