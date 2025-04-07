@@ -41,7 +41,7 @@ int main(int argc,char** argv)
 
  // Set mandatory initialization classes
  //
- DetectorConstruction* detector = new DetectorConstruction();
+ DetectorConstruction* detector = new DetectorConstruction(myG4Args);
  runManager->SetUserInitialization(detector);
 
  FTFP_BERT* physics = new FTFP_BERT;  

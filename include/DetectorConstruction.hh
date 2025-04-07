@@ -25,7 +25,7 @@ class G4CMPElectrodeSensitivity;
 
 class DetectorConstruction : public G4VUserDetectorConstruction {
 public:
-  DetectorConstruction();
+  DetectorConstruction(MyG4Args* MainArgs);
   virtual ~DetectorConstruction();
   
 public:
@@ -76,7 +76,7 @@ private:
   
   G4CMPElectrodeSensitivity* fSuperconductorSensitivity;
   G4bool fConstructed;
-  // MyG4Args* PassArgs;
+  MyG4Args* PassArgs;
   //G4bool fIfField;
   
   //public:

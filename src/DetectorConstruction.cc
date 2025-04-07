@@ -14,6 +14,7 @@
 
 #include "DetectorConstruction.hh"
 #include "DetectorParameters.hh"
+#include "SensitiveDetector.hh"
 #include "Sensitivity.hh"
 #include "G4CMPPhononElectrode.hh"
 #include "G4CMPElectrodeSensitivity.hh"
@@ -49,7 +50,9 @@ using namespace DetectorParameters;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-DetectorConstruction::DetectorConstruction(){;}
+DetectorConstruction::DetectorConstruction(MyG4Args* MainArgs){
+  PassArgs = MainArgs;
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
@@ -507,6 +510,8 @@ void DetectorConstruction::SetupGeometry()
   if (!fSuperconductorSensitivity)
     fSuperconductorSensitivity = new Sensitivity("PhononElectrode");
   SDman->AddNewDetector(fSuperconductorSensitivity);
+
+  SensitiveDetector *sensDet = new SensitiveDetector("SensitiveDetector", PassArgs);
   // Sensitivity* sensDet = new Sensitivity("SensitiveDetector", PassArgs);
 
   G4MultiUnion* solid_WSiWire = new G4MultiUnion("solid_WSiWire");
@@ -567,6 +572,7 @@ void DetectorConstruction::SetupGeometry()
   logic_WSiWire->SetUserLimits(wireUserLimits);
   logic_aSiWire->SetUserLimits(wireUserLimits);
   logic_WSiWire->SetSensitiveDetector(fSuperconductorSensitivity);
+  logic_WSiWire->SetSensitiveDetector(sensDet);
 
   G4VisAttributes* WSiVisAtt= new G4VisAttributes(G4Colour(0.0,1.0,1.0,0.5));
   WSiVisAtt->SetVisibility(true);
