@@ -31,7 +31,7 @@ public:
     virtual void GeneratePrimaries(G4Event*);
 
   private:
-    G4GeneralParticleSource* fParticleGun;
+    G4ParticleGun* fParticleGun;
     MyG4Args* PassArgs;
 
 };

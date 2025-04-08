@@ -22,12 +22,13 @@
 #include "G4PhononTransSlow.hh"
 #include "G4PhononLong.hh"
 #include "G4SystemOfUnits.hh"
+#include "G4ParticleTable.hh"
 
 using namespace std;
 
 PrimaryGeneratorAction::PrimaryGeneratorAction(MyG4Args* MainArgs) { 
   PassArgs = MainArgs;
-  fParticleGun  = new G4GeneralParticleSource();
+  fParticleGun = new G4ParticleGun(1);
 
   // default particle kinematics ("geantino" triggers random phonon choice)
   //  fParticleGun->SetParticleDefinition(G4Geantino::Definition());
@@ -48,11 +49,9 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction() {
  
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 
-  G4cout<< " ### Starting Generator  " <<G4endl;    
-
-  fParticleGun = new G4ParticleGun(1); /*Number of particles*/	
+  G4cout<< " ### Starting Generator  " <<G4endl;
   
-  G4ParticleTable *particleTable = G4ParticleTable::GetParticleTable();
+  G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
 
   // Define the proton particle
   G4String particleName = "proton";
