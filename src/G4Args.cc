@@ -2,6 +2,7 @@
 #include <cstring>  // For strcmp
 #include <iostream> // For G4cout
 #include <unistd.h> // For exit()
+#include "CLHEP/Units/SystemOfUnits.h"
 
 // Constructor: Process command-line arguments
 MyG4Args::MyG4Args(int mainargc, char** mainargv) {
@@ -21,25 +22,51 @@ MyG4Args::MyG4Args(int mainargc, char** mainargv) {
                 exit(EXIT_FAILURE);
             }
         }
-	   // Check for "-random" argument to activate random particle generator location
+	    // Check for "-random" argument to activate random particle generator location
 		if (strcmp(mainargv[j], "-rndgun") == 0) {
 			randomGunLocation = true;
 			G4cout << "### Random particle location activated." << G4endl;
 		}else if(strcmp(mainargv[j],"-runevt")==0)
-                {   
-                    runevt=atoi(mainargv[j+1]);j=j+1;
-                    G4cout<< " ### Run "<< runevt <<" evts" <<G4endl;     
-                        
-                }else if(strcmp(mainargv[j],"-Allrecord")==0)
-                {   
-                    Allrecord=true;
-                    G4cout<< " ### Allrecord true, storing all impacts even in Edep==0 (needed for storing impact initial point)" <<G4endl;     
-                        
-                }
-			
-        
+        {   
+            runevt=atoi(mainargv[j+1]);j=j+1;
+            G4cout<< " ### Run "<< runevt <<" evts" <<G4endl;     
+                
+        }else if(strcmp(mainargv[j],"-Allrecord")==0)
+        {   
+            Allrecord = true;
+            G4cout<< " ### Allrecord true, storing all impacts even in Edep==0 (needed for storing impact initial point)" <<G4endl;     
+                
+        }else if(strcmp(mainargv[j], "-PosResScan") == 0) {  // do pos res scan (across wire) by default
+            posResScan = true;
+        }
     }
 
+    if (randomGunLocation && posResScan) {
+        G4cerr << "### Error: both 'rndgun' and 'PosResScan' were activated, however both can't be run." << G4endl;
+        exit(EXIT_FAILURE);
+    }else if (randomGunLocation){
+        for (int i=0; i<runevt; i++) {
+
+            // Generate random positions within a 10-micron width in X and Y (range: -5 microns to +5 microns)
+            G4double randomX = -25.0 + (static_cast<double>(rand()) / RAND_MAX) * 50.0;  // Random value between -50 and +50 microns
+            G4double randomY = -25.0 + (static_cast<double>(rand()) / RAND_MAX) * 50.0;  // Random value between -50 and +50 microns
+            // Set position with random X and Y, fixed Z at 0 mm
+            gunpositions.push_back(G4ThreeVector(randomX / 1000 * CLHEP::mm, randomY / 1000 * CLHEP::mm, 0 * CLHEP::mm));
+
+        }
+    }else if (posResScan){
+
+        G4ThreeVector currentPos = G4ThreeVector(0. * CLHEP::mm, 0. * CLHEP::mm, 0 * CLHEP::mm);
+        double totalDistance = 0.0015 + 0.00225;
+        double pointSpacing = totalDistance / runevt;
+        for (int i=0; i<runevt; i++) {
+
+            currentPos += G4ThreeVector(0. * CLHEP::mm, (i * pointSpacing) * CLHEP::mm, 0 * CLHEP::mm);
+            gunpositions.push_back(currentPos);
+
+        }
+
+    }
 
 }
 
@@ -73,5 +100,10 @@ void MyG4Args::ResetTotalEnergyByParticleAndEvent() {
 void MyG4Args::StorePosition(const G4ThreeVector& position) {
     // Add the position to the hitRecords with default or placeholder values for other fields
     gunpositions.push_back(position);
+}
 
+// Implementation of GetPosition
+G4ThreeVector MyG4Args::GetPosition(int i) {
+    // Add the position to the hitRecords with default or placeholder values for other fields
+    return gunpositions[i];
 }

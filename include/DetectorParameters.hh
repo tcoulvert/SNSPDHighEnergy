@@ -78,8 +78,8 @@ namespace DetectorParameters
 	constexpr double dp_stripDimX = dp_sensorDimX * 0.9;
   constexpr double dp_stripDimY = dp_sensorDimY * 0.9;
   constexpr double dp_stripDimZ = 3 * CLHEP::nm;
-	constexpr double dp_stripThickness  = 2250 * CLHEP::nm;
-	constexpr double dp_stripSpacing = 1500 * CLHEP::nm;
+	constexpr double dp_stripThickness  = 1500 * CLHEP::nm;
+	constexpr double dp_stripSpacing = 2250 * CLHEP::nm;
   constexpr double dp_stripWrapInnerRadius = dp_stripSpacing / 2;
   constexpr double dp_stripWrapOuterRadius = (dp_stripSpacing + (2 * dp_stripThickness)) / 2;
   constexpr int dp_numStrips = 240;

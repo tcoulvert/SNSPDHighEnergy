@@ -52,6 +52,7 @@ int main(int argc, char** argv)
  // Set user action classes (different for Geant4 10.0)
  //
  runManager->SetUserInitialization(new ActionInitialization(myG4Args));
+ runManager->Initialize();
 
  // Create configuration managers to ensure macro commands exist
  G4CMPConfigManager::Instance();
@@ -60,6 +61,8 @@ int main(int argc, char** argv)
  if (argc==1)   // Define UI session for interactive mode
  {
 
+  G4UIExecutive* ui = new G4UIExecutive(argc, argv);
+
   // Initialize the visualization manager
   G4VisManager *visManager = new G4VisExecutive();
   visManager->Initialize();
@@ -67,12 +70,40 @@ int main(int argc, char** argv)
   // Get the UI manager and apply visualization commands
   G4UImanager *UImanager = G4UImanager::GetUIpointer();
 
-  G4UIExecutive* ui = new G4UIExecutive(argc, argv);
-  ui->SessionStart();
-  delete ui;
+  // Open the visualization and set up the scene
+  UImanager->ApplyCommand("/vis/open OGL");
+  UImanager->ApplyCommand("/vis/viewer/set/viewpointVector 0 0 1");
+  UImanager->ApplyCommand("/vis/viewer/zoom 1.4");
+  UImanager->ApplyCommand("/vis/drawVolume");
+  UImanager->ApplyCommand("/vis/viewer/set/autoRefresh true");
+  UImanager->ApplyCommand("/vis/scene/add/trajectories smooth");
+  UImanager->ApplyCommand("/vis/scene/endOfEventAction accumulate");
+  UImanager->ApplyCommand("/vis/scene/add/axes");
 
-  delete visManager;
-  delete UImanager;
+  // Configure step point visualization
+  UImanager->ApplyCommand("/vis/modeling/trajectories/create/drawByParticleID");
+  UImanager->ApplyCommand("/vis/modeling/trajectories/drawByParticleID-0/set proton White");
+  UImanager->ApplyCommand("/vis/modeling/trajectories/drawByParticleID-0/set e- Yellow");
+  UImanager->ApplyCommand("/vis/modeling/trajectories/drawByParticleID/set G4CMPDriftElectron Violet");
+  UImanager->ApplyCommand("/vis/modeling/trajectories/drawByParticleID/set G4CMPDriftHole Orange");
+  UImanager->ApplyCommand("/vis/modeling/trajectories/drawByParticleID/set phononTS Red");
+  UImanager->ApplyCommand("/vis/modeling/trajectories/drawByParticleID/set phononTF Green");
+  UImanager->ApplyCommand("/vis/modeling/trajectories/drawByParticleID/set phononL Blue");
+
+  UImanager->ApplyCommand("/vis/viewer/set/style wireframe");
+  UImanager->ApplyCommand("/vis/viewer/set/hiddenMarker true");
+  UImanager->ApplyCommand("/vis/viewer/set/viewpointThetaPhi 0 90");
+  UImanager->ApplyCommand("/vis/viewer/zoom 1.6");
+
+  // UImanager->ApplyCommand("/g4cmp/producePhonons 0.1");
+  // UImanager->ApplyCommand("/g4cmp/sampleLuke 0.1");
+  // UImanager->ApplyCommand("/g4cmp/produceCharges 0.001");
+  
+  ui->SessionStart();
+
+  // delete ui;
+  // delete visManager;
+  // delete UImanager;
 
  } else if (myG4Args->GetRunevt() > 0) 
  {

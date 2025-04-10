@@ -41,6 +41,8 @@ public:
 
 	// Function to store a G4ThreeVector position
 	void StorePosition(const G4ThreeVector& position);
+	// Function to get a G4ThreeVector position from the gunpositions vector
+    G4ThreeVector GetPosition(int i);
 
     // Getter for hit records
     const std::vector<HitData>& GetHitRecords() const { return hitRecords; }
@@ -61,6 +63,7 @@ public:
 
 	// Getter for the randomGunLocation flag
 	bool GetRandomGunLocation() const { return randomGunLocation; }
+    bool GetPosResScan() const { return posResScan; }
 	bool GetAllrecord() const { return Allrecord; }
 	G4int GetRunevt() const {return runevt;}
 
@@ -82,11 +85,12 @@ public:
     
 private:
     // Member variables
-    G4String OutName= "default_output";
+    G4String OutName= "sim_output";
     G4String MacName;    
     G4int runevt=0;
     bool Allrecord = false;
 	bool randomGunLocation = false;  // Flag to determine if random location is activated
+    bool posResScan = false;  // Flag to determine if position resolution scan is activated
 	//G4double CurrentEvtEdep = 0;
 	
     std::vector<G4ThreeVector> gunpositions; // Vector to store position data
