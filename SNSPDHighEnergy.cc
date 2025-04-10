@@ -27,7 +27,13 @@
 #include "ConfigManager.hh"
 #include "DetectorConstruction.hh"
 #include "DetectorParameters.hh"
+
 #include "FTFP_BERT.hh"
+#include "G4OpticalPhysics.hh" // Optical physics
+#include "G4RadioactiveDecayPhysics.hh" // Radioactive decay physics
+#include "G4StepLimiterPhysics.hh" // Step limiter physics
+#include "G4EmLivermorePhysics.hh"
+
 #include "G4Args.hh"
 
 using namespace DetectorParameters;
@@ -46,11 +52,23 @@ int main(int argc, char** argv)
  // Set mandatory initialization classes
  //
  DetectorConstruction* detector = new DetectorConstruction(myG4Args);
+ detector->Construct();
  runManager->SetUserInitialization(detector);
 
- FTFP_BERT* physics = new FTFP_BERT;
+ G4cout<< " ### Starting Define Physics" <<G4endl;
+ FTFP_BERT* physics = new FTFP_BERT(0);
  physics->RegisterPhysics(new G4CMPPhysics);
+
+ physics->RegisterPhysics(new G4OpticalPhysics);
+ physics->RegisterPhysics(new G4RadioactiveDecayPhysics); // For radioactive decay
+ physics->RegisterPhysics(new G4EmLivermorePhysics); // For low energy photons
+ G4StepLimiterPhysics* stepLimitPhys = new G4StepLimiterPhysics();
+ stepLimitPhys->SetApplyToAll(true); // activates step limit for ALL particles
+ physics->RegisterPhysics(stepLimitPhys);
+
  physics->SetCuts();
+ G4cout<< " ### Finish Define Physics" <<G4endl;  
+
  runManager->SetUserInitialization(physics);
  
  // Set user action classes (different for Geant4 10.0)

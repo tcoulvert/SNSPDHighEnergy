@@ -20,13 +20,13 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 //Default constructor
-SteppingAction::SteppingAction()
+SteppingAction::SteppingAction(MyG4Args* MainArgs)
 {
   //Upon construction of this class, create a ROOT file with step information and a tree with variables for
   //storing the step information if needed
   //fOutputFile.open("StepInformationFile.txt",std::ios::trunc);
 
-  
+  PassArgs = MainArgs;
   
 }
 
@@ -63,6 +63,9 @@ void SteppingAction::ExportStepInformation( const G4Step * step )
   int runNo = G4RunManager::GetRunManager()->GetCurrentRun()->GetRunID();
   int eventNo = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();
   int trackNo = step->GetTrack()->GetTrackID();
+
+  G4cout << "Debug - Run No = " << runNo << " event No = " << eventNo << " track No = " << trackNo << G4endl;
+
   std::string particleName = step->GetTrack()->GetParticleDefinition()->GetParticleName();
   double preStepX_mm = preSP->GetPosition().x() / CLHEP::mm;
   double preStepY_mm = preSP->GetPosition().y() / CLHEP::mm;

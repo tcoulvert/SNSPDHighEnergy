@@ -15,7 +15,6 @@
 #include "DetectorConstruction.hh"
 #include "DetectorParameters.hh"
 #include "SensitiveDetector.hh"
-#include "Sensitivity.hh"
 #include "G4CMPPhononElectrode.hh"
 #include "G4CMPElectrodeSensitivity.hh"
 #include "G4CMPLogicalBorderSurface.hh"
@@ -267,6 +266,7 @@ void DetectorConstruction::SetupGeometry()
 
     //Add a phonon sensor to the interface properties here.
     AttachPhononSensor(fSiO2WSiInterface);
+    AttachPhononSensor(faSiWSiInterface);
   }
 
 
@@ -507,8 +507,7 @@ void DetectorConstruction::SetupGeometry()
   //-------------------------------------------------------------------------------------------------------------------
   //Finally, setup the nanowire strips and establish a sensitivity object
   G4SDManager* SDman = G4SDManager::GetSDMpointer();
-  if (!fSuperconductorSensitivity)
-    fSuperconductorSensitivity = new SensitiveDetector("SensitiveDetector", PassArgs);
+  fSuperconductorSensitivity = new SensitiveDetector("SensitiveDetector", PassArgs);
   SDman->AddNewDetector(fSuperconductorSensitivity);
 
   G4MultiUnion* solid_WSiWire = new G4MultiUnion("solid_WSiWire");

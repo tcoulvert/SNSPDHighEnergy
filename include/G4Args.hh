@@ -86,6 +86,7 @@ public:
 private:
     // Member variables
     G4String OutName= "sim_output";
+    // G4String BasicOutName= "basic_output";
     G4String MacName;    
     G4int runevt=0;
     bool Allrecord = false;

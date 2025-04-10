@@ -82,6 +82,8 @@ G4bool SensitiveDetector::IsHit(const G4Step* step,
     const G4StepPoint* postStepPoint = step->GetPostStepPoint();
     const G4ParticleDefinition* particle = track->GetDefinition();
 
+    G4cout << "Debug - Checking if particle " << particle->GetParticleName() << " created a hit in detector" << G4endl;
+
     //-------------------------------------------------------------------
     //Set criteion for what counts as a "hit" that should be recorded.
     bool selectTargetVolumes = true;

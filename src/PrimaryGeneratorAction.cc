@@ -62,7 +62,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
   fParticleGun->SetParticleDefinition(particle_p);
   fParticleGun->SetParticleMomentum(120. * GeV); // Set momentum to 120 GeV    
 
-  // Set particle direction to -z
+  // Set particle direction to +z
   fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0, 0, 1));
     
 	// Declare pos outside the if-else blocks
@@ -72,8 +72,8 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 	if (PassArgs->GetRandomGunLocation() || PassArgs->GetPosResScan()) {
 		pos = PassArgs->GetPosition(anEvent->GetEventID());
 	} else {
-		// Set position to 0 mm in Z with X and Y as 0 if randomGunLocation and posResScan are false
-		pos = G4ThreeVector(0. * CLHEP::mm, 0.00112 * CLHEP::mm, 0 * CLHEP::mm);
+		// Set position to -200 mm in Z with X and Y as 0 if randomGunLocation and posResScan are false
+		pos = G4ThreeVector(0. * CLHEP::mm, 0. * CLHEP::mm, -200. * CLHEP::mm);
 	  PassArgs->StorePosition(pos);
 	}
 
