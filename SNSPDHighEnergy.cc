@@ -39,12 +39,16 @@ int main(int argc, char** argv)
  //
  G4RunManager* runManager = new G4RunManager;
 
+ // Create configuration managers to ensure macro commands exist
+ G4CMPConfigManager::Instance();
+ ConfigManager::Instance();
+
  // Set mandatory initialization classes
  //
  DetectorConstruction* detector = new DetectorConstruction(myG4Args);
  runManager->SetUserInitialization(detector);
 
- FTFP_BERT* physics = new FTFP_BERT;  
+ FTFP_BERT* physics = new FTFP_BERT;
  physics->RegisterPhysics(new G4CMPPhysics);
  physics->SetCuts();
  runManager->SetUserInitialization(physics);
@@ -52,15 +56,11 @@ int main(int argc, char** argv)
  // Set user action classes (different for Geant4 10.0)
  //
  runManager->SetUserInitialization(new ActionInitialization(myG4Args));
- runManager->Initialize();
-
- // Create configuration managers to ensure macro commands exist
- G4CMPConfigManager::Instance();
- ConfigManager::Instance();
 
  if (argc==1)   // Define UI session for interactive mode
  {
 
+  runManager->Initialize();
   G4UIExecutive* ui = new G4UIExecutive(argc, argv);
 
   // Initialize the visualization manager
@@ -95,9 +95,9 @@ int main(int argc, char** argv)
   UImanager->ApplyCommand("/vis/viewer/set/viewpointThetaPhi 0 90");
   UImanager->ApplyCommand("/vis/viewer/zoom 1.6");
 
-  // UImanager->ApplyCommand("/g4cmp/producePhonons 0.1");
-  // UImanager->ApplyCommand("/g4cmp/sampleLuke 0.1");
-  // UImanager->ApplyCommand("/g4cmp/produceCharges 0.001");
+  UImanager->ApplyCommand("/g4cmp/producePhonons 0.1");
+  UImanager->ApplyCommand("/g4cmp/sampleLuke 0.1");
+  UImanager->ApplyCommand("/g4cmp/produceCharges 0.001");
   
   ui->SessionStart();
 
@@ -108,6 +108,7 @@ int main(int argc, char** argv)
  } else if (myG4Args->GetRunevt() > 0) 
  {
 
+  runManager->Initialize();
   // Run the specified number of events
   G4int numberOfEvents = myG4Args->GetRunevt();
   G4cout << "### Running " << numberOfEvents << " events." << G4endl;

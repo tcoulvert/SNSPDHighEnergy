@@ -508,11 +508,8 @@ void DetectorConstruction::SetupGeometry()
   //Finally, setup the nanowire strips and establish a sensitivity object
   G4SDManager* SDman = G4SDManager::GetSDMpointer();
   if (!fSuperconductorSensitivity)
-    fSuperconductorSensitivity = new Sensitivity("PhononElectrode");
+    fSuperconductorSensitivity = new SensitiveDetector("SensitiveDetector", PassArgs);
   SDman->AddNewDetector(fSuperconductorSensitivity);
-
-  SensitiveDetector *sensDet = new SensitiveDetector("SensitiveDetector", PassArgs);
-  // Sensitivity* sensDet = new Sensitivity("SensitiveDetector", PassArgs);
 
   G4MultiUnion* solid_WSiWire = new G4MultiUnion("solid_WSiWire");
   G4MultiUnion* solid_aSiWire = new G4MultiUnion("solid_aSiWire");
@@ -572,7 +569,6 @@ void DetectorConstruction::SetupGeometry()
   logic_WSiWire->SetUserLimits(wireUserLimits);
   logic_aSiWire->SetUserLimits(wireUserLimits);
   logic_WSiWire->SetSensitiveDetector(fSuperconductorSensitivity);
-  logic_WSiWire->SetSensitiveDetector(sensDet);
 
   G4VisAttributes* WSiVisAtt= new G4VisAttributes(G4Colour(0.0,1.0,1.0,0.5));
   WSiVisAtt->SetVisibility(true);
@@ -626,7 +622,7 @@ void DetectorConstruction::AttachPhononSensor(G4CMPSurfaceProperty * surfProp)
   auto sensorProp = surfProp->GetPhononMaterialPropertiesTablePointer();
   sensorProp->AddConstProperty("filmAbsorption", 0.0);              //NOT WELL MOTIVATED - probably parametrize and put on slider?
   sensorProp->AddConstProperty("filmThickness", 90.*CLHEP::nm);     //Accurate for our thin film.
-  sensorProp->AddConstProperty("gapEnergy", 1.6e-3*CLHEP::eV);       //Reasonably motivated. Actually, looks like Novotny and Meincke are quoting 2Delta, and this is delta. Nuss and Goossen mention that Nb has a delta value closer to this.
+  sensorProp->AddConstProperty("gapEnergy", 1.6e-3*CLHEP::eV);      //Reasonably motivated. Actually, looks like Novotny and Meincke are quoting 2Delta, and this is delta. Nuss and Goossen mention that Nb has a delta value closer to this.
   sensorProp->AddConstProperty("lowQPLimit", 3.);                   //NOT WELL MOTIVATED YET -- Dunno how to inform this...
   sensorProp->AddConstProperty("phononLifetime", 4.17*CLHEP::ps);   //Kaplan paper says 242ps for Al, same table says 4.17ps for characteristic time for Nb.
   sensorProp->AddConstProperty("phononLifetimeSlope", 0.29);        //Based on guessing from Kaplan paper, I think this is material-agnostic?

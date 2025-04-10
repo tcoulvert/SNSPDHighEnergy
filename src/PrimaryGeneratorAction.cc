@@ -55,6 +55,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 
   // Define the proton particle
   G4String particleName = "proton";
+  // G4String particleName = "e-";
   G4ParticleDefinition *particle_p = particleTable->FindParticle(particleName);
   
   // Set particle properties for 120 GeV proton
@@ -72,7 +73,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 		pos = PassArgs->GetPosition(anEvent->GetEventID());
 	} else {
 		// Set position to 0 mm in Z with X and Y as 0 if randomGunLocation and posResScan are false
-		pos = G4ThreeVector(0. * mm, 0. * mm, 0 * mm);
+		pos = G4ThreeVector(0. * CLHEP::mm, 0.00112 * CLHEP::mm, 0 * CLHEP::mm);
 	  PassArgs->StorePosition(pos);
 	}
 
