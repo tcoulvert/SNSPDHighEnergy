@@ -59,9 +59,9 @@ int main(int argc, char** argv)
  FTFP_BERT* physics = new FTFP_BERT(0);
  physics->RegisterPhysics(new G4CMPPhysics);
 
- physics->RegisterPhysics(new G4OpticalPhysics);
- physics->RegisterPhysics(new G4RadioactiveDecayPhysics); // For radioactive decay
- physics->RegisterPhysics(new G4EmLivermorePhysics); // For low energy photons
+//  physics->RegisterPhysics(new G4OpticalPhysics);
+//  physics->RegisterPhysics(new G4RadioactiveDecayPhysics); // For radioactive decay
+//  physics->RegisterPhysics(new G4EmLivermorePhysics); // For low energy photons
  G4StepLimiterPhysics* stepLimitPhys = new G4StepLimiterPhysics();
  stepLimitPhys->SetApplyToAll(true); // activates step limit for ALL particles
  physics->RegisterPhysics(stepLimitPhys);
