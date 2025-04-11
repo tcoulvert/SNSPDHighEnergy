@@ -310,17 +310,6 @@ void DetectorConstruction::SetupGeometry()
 
   //---------------------------------------------------------------------------------------------------------------------
   // First, set up the Aluminum absorption fridge
-  // G4double innerRadius = 0.114338 * m;  // Cylinder with no inner radius (solid cylinder)
-  // G4double outerRadius = 0.114846 * m; // Radius of the cylinder
-  // //innerRadius = 0.05 * m;  // Cylinder with no inner radius (solid cylinder)
-  // //outerRadius = 0.06* m; // Radius of the cylinder
-  
-  // G4double innerRadiusShield2 = 0.124155 * m;  // Cylinder with no inner radius (solid cylinder)
-  // G4double outerRadiusShield2 = 0.127* m; // Radius of the cylinder
-  
-  // G4double height = WorldL*m;    // Height of the cylinder
-  // G4double startAngle = 0.0 * deg; // Starting angle
-  // G4double spanningAngle = 360.0 * deg; // Full circle
   G4Tubs *solidRadiator = new G4Tubs("solidRadiator", dp_fridgeInnerRadius, dp_fridgeOuterRadius, dp_fridgeHeight, 0.*CLHEP::deg, 360.*CLHEP::deg);
   G4Tubs *solidRadiatorShield2 = new G4Tubs("solidRadiator2", dp_fridgeInnerRadiusShield, dp_fridgeOuterRadiusShield, dp_fridgeHeight, 0.*CLHEP::deg, 360.*CLHEP::deg);
 
@@ -391,9 +380,9 @@ void DetectorConstruction::SetupGeometry()
   //----------------------------------------------------------------
   //Max allowed step-size in substrate
   G4UserLimits* substrateUserLimits = new G4UserLimits();
-  substrateUserLimits->SetMaxAllowedStep(0.1 * CLHEP::mm);
+  substrateUserLimits->SetMaxAllowedStep(1. * CLHEP::nm);
   G4UserLimits* wireUserLimits = new G4UserLimits();
-	wireUserLimits->SetMaxAllowedStep(0.05 * nm);
+	wireUserLimits->SetMaxAllowedStep(0.05 * CLHEP::nm);
 
 
 
@@ -601,6 +590,7 @@ void DetectorConstruction::SetupGeometry()
 	);
 
   //Set up border surfaces
+  G4CMPLogicalBorderSurface* border_aSiWire_WSiWire = new G4CMPLogicalBorderSurface("border_aSiStrip_WSiStrip", phys_aSiWire, phys_WSiWire, faSiWSiInterface);
   G4CMPLogicalBorderSurface* border_SiO2_WSiWire = new G4CMPLogicalBorderSurface("border_SiO2_WSiStrip", phys_WSiWire, phys_SiO2toplayer, fSiO2WSiInterface);
   G4CMPLogicalBorderSurface* border_SiO2_aSiWire = new G4CMPLogicalBorderSurface("border_SiO2_aSiStrip", phys_aSiWire, phys_SiO2toplayer, fSiO2aSiInterface);
 
