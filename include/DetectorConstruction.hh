@@ -50,7 +50,7 @@ private:
   G4Material* fAl;
   G4Material* faSi;
   G4Material* fWSi;
-  G4Material* fSi3N4;
+  G4Material* fSi;
   G4Material* fVacuum;
   
   G4VPhysicalVolume* fWorldPhys;
@@ -60,19 +60,19 @@ private:
   G4OpticalSurface *mirrorSurface;
 
   // Substrate to copper housing interface
-  G4CMPSurfaceProperty* fSi3N4CuInterface;
-  // Substrate to SiO2 layer interface
-  G4CMPSurfaceProperty* fSi3N4SiO2Interface;
-  // SiO2 layer to Amorphous Silicon (non-superconducting top?) interface
+  G4CMPSurfaceProperty* fSiCuInterface;
+  // Si Substrate to SiO2 substrate interface
+  G4CMPSurfaceProperty* fSiSiO2Interface;
+  // SiO2 Substrate to SiO2 top layer interface
+  G4CMPSurfaceProperty* fSiO2SiO2Interface;
+  // SiO2 layer to Amorphous Silicon (non-superconducting cap) interface
   G4CMPSurfaceProperty* fSiO2aSiInterface;
-  // SiO2 layer to Tungsten Silicide (superconducting wire?) interface    
+  // SiO2 layer to Tungsten Silicide (superconducting wire) interface    
   G4CMPSurfaceProperty* fSiO2WSiInterface;
   // aSi layer to WSi (interface between superconducting wire and non-superconducting gaps) interface   
   G4CMPSurfaceProperty* faSiWSiInterface;
-  // WSi layer to vacuum interface 
-  G4CMPSurfaceProperty* fWSiVacuumInterface;
-  // aSi layer to vacuum interface 
-  G4CMPSurfaceProperty* faSiVacuumInterface;
+  // SiO2 layer to vacuum interface 
+  G4CMPSurfaceProperty* fSiO2VacuumInterface;
   
   G4CMPElectrodeSensitivity* fSuperconductorSensitivity;
   G4bool fConstructed;

@@ -30,7 +30,7 @@
 SensitiveDetector::SensitiveDetector(G4String name, MyG4Args* MainArgs): G4CMPElectrodeSensitivity(name)
 {
     PassArgs = MainArgs;
-    G4cout << "### Sensitive detector '" << name << "' is being created!" << G4endl;
+    G4cout << "### Sensitive detector " << name << " is being created!" << G4endl;
 
 }
 

@@ -55,12 +55,15 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 
   // Define the proton particle
   G4String particleName = "proton";
-  // G4String particleName = "e-";
-  G4ParticleDefinition *particle_p = particleTable->FindParticle(particleName);
+  // G4String particleName = "phononL";
+  G4ParticleDefinition* particle_p = particleTable->FindParticle(particleName);
   
   // Set particle properties for 120 GeV proton
   fParticleGun->SetParticleDefinition(particle_p);
-  fParticleGun->SetParticleMomentum(120. * GeV); // Set momentum to 120 GeV    
+  fParticleGun->SetParticleMomentum(120. * GeV); // Set momentum to 120 GeV 
+  if (particleName == "phononL") {
+    fParticleGun->SetParticleMomentum(0.03 * eV); // Set momentum to 0.03 eV
+  }
 
   // Set particle direction to +z
   fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0, 0, 1));
@@ -73,7 +76,10 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 		pos = PassArgs->GetPosition(anEvent->GetEventID());
 	} else {
 		// Set position to -200 mm in Z with X and Y as 0 if randomGunLocation and posResScan are false
-		pos = G4ThreeVector(0. * CLHEP::mm, 0. * CLHEP::mm, -200. * CLHEP::mm);
+    pos = G4ThreeVector(0. * CLHEP::mm, 0. * CLHEP::mm, -200. * CLHEP::mm);
+    if (particleName == "phononL") {
+		  pos = G4ThreeVector(0. * CLHEP::mm, 0. * CLHEP::mm, -1.525260 * CLHEP::mm); // in the middle of the SiO2 toplayer
+    }
 	  PassArgs->StorePosition(pos);
 	}
 

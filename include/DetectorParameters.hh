@@ -48,29 +48,29 @@ namespace DetectorParameters
   constexpr double dp_housing2DimX = 6. * CLHEP::mm;
   constexpr double dp_housing2DimY = 2. * CLHEP::mm;
   constexpr double dp_housing2DimZ = 6. * CLHEP::mm;
-  // constexpr double dp_housingCentralCutoutDimX = dp_siliconChipDimX + dp_eps;
-  // constexpr double dp_housingCentralCutoutDimY = dp_siliconChipDimY + dp_eps;
-  // constexpr double dp_housingCentralCutoutDimZ = dp_housingDimZ * 0.3;
-  // constexpr double dp_housingRadialCutoutDimX = 1.03 * CLHEP::mm; //Much of the cutout is actually thinner, but the important thing is the corner that the chip sits on (to leading order) - the wall-chip interfaces will be a smidge shorter than in reality, but for now this is fine.
-  // constexpr double dp_housingRadialCutoutDimY = 2 * CLHEP::mm; //Arbitrary, but 2 mm should do the trick
-  // constexpr double dp_housingRadialCutoutDimZ = dp_siliconChipDimZ; //QUBIT IS FLUSH WITH TOP OF HOUSING
 
   //----------------------------------------------------------------
-  //Si3N4 substrate dimensions
-  constexpr double dp_Si3N4substrateDimX = 1. * CLHEP::mm;
-  constexpr double dp_Si3N4substrateDimY = 1. * CLHEP::mm;
-  constexpr double dp_Si3N4substrateDimZ = 0.5 * CLHEP::mm;
+  //Si substrate dimensions
+  constexpr double dp_SisubstrateDimX = 1. * CLHEP::mm;
+  constexpr double dp_SisubstrateDimY = 1. * CLHEP::mm;
+  constexpr double dp_SisubstrateDimZ = 0.525 * CLHEP::mm;
 
   //----------------------------------------------------------------
   //SiO2 substrate dimensions
-  constexpr double dp_SiO2substrateDimX = dp_Si3N4substrateDimX;
-  constexpr double dp_SiO2substrateDimY = dp_Si3N4substrateDimY;
-  constexpr double dp_SiO2substrateDimZ = 40. * CLHEP::nm;
+  constexpr double dp_SiO2substrateDimX = dp_SisubstrateDimX;
+  constexpr double dp_SiO2substrateDimY = dp_SisubstrateDimY;
+  constexpr double dp_SiO2substrateDimZ = 240. * CLHEP::nm;
+
+  //----------------------------------------------------------------
+  //SiO2 toplayer dimensions
+  constexpr double dp_SiO2toplayerDimX = dp_SisubstrateDimX;
+  constexpr double dp_SiO2toplayerDimY = dp_SisubstrateDimY;
+  constexpr double dp_SiO2toplayerDimZ = 40. * CLHEP::nm;
 
   //----------------------------------------------------------------
   //Sensor dimensions
-  constexpr double dp_sensorDimX = dp_Si3N4substrateDimX;
-  constexpr double dp_sensorDimY = dp_Si3N4substrateDimY;
+  constexpr double dp_sensorDimX = dp_SisubstrateDimX;
+  constexpr double dp_sensorDimY = dp_SisubstrateDimY;
   constexpr double dp_sensorDimZ = -1. * CLHEP::mm;
 
   //----------------------------------------------------------------
