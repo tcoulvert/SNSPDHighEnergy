@@ -78,7 +78,9 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 		// Set position to -200 mm in Z with X and Y as 0 if randomGunLocation and posResScan are false
     pos = G4ThreeVector(0. * CLHEP::mm, 0. * CLHEP::mm, -200. * CLHEP::mm);
     if (particleName == "phononL") {
-		  pos = G4ThreeVector(0. * CLHEP::mm, 0. * CLHEP::mm, -1.525260 * CLHEP::mm); // in the middle of the SiO2 toplayer
+      // middle of SiO2 toplayer = -1.525260 mm
+      // middle of SiO2 substrate = -1.525120 mm -> if using this one switch gun direction for larger event yield
+		  pos = G4ThreeVector(0. * CLHEP::mm, 0.002 * CLHEP::mm, -1.525260 * CLHEP::mm);
     }
 	  PassArgs->StorePosition(pos);
 	}
