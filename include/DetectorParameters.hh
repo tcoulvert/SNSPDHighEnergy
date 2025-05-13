@@ -20,7 +20,6 @@ namespace DetectorParameters
 {
   //----------------------------------------------------------------
   //Overall World
-  // constexpr double WorldL = 0.127 * 2.2 * CLHEP::m;
   constexpr double dp_worldSize = 0.127 * 2.2 * CLHEP::m;  //((0.02+0.01+0.02)*2+0.006);
 
   //----------------------------------------------------------------
@@ -30,7 +29,7 @@ namespace DetectorParameters
   constexpr double dp_fridgeInnerRadiusShield = 0.124155 * CLHEP::m;
   constexpr double dp_fridgeOuterRadiusShield = 0.127 * CLHEP::m;
   constexpr double dp_fridgeHeight = 0.127 * CLHEP::m;
-
+  
 
   //----------------------------------------------------------------
   //Misc

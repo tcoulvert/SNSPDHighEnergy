@@ -38,6 +38,8 @@ MyG4Args::MyG4Args(int mainargc, char** mainargv) {
                 
         }else if(strcmp(mainargv[j], "-PosResScan") == 0) {  // do pos res scan (across wire) by default
             posResScan = true;
+        }else if(strcmp(mainargv[j], "-insideCryostat") == 0) {
+            insideCryostat = true;
         }
     }
 

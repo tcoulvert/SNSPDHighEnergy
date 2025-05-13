@@ -82,6 +82,10 @@ public:
 		return CurrentEvtEdep;
 	}
 
+    const bool GetInsideCryostat() {
+        return insideCryostat;
+    }
+
     
 private:
     // Member variables
@@ -92,6 +96,7 @@ private:
     bool Allrecord = false;
 	bool randomGunLocation = false;  // Flag to determine if random location is activated
     bool posResScan = false;  // Flag to determine if position resolution scan is activated
+    bool insideCryostat = false;  // Flag to determine if proton is outside (realistic) or inside (better for debugging) cryostat
 	//G4double CurrentEvtEdep = 0;
 	
     std::vector<G4ThreeVector> gunpositions; // Vector to store position data
