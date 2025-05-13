@@ -82,21 +82,26 @@ public:
 		return CurrentEvtEdep;
 	}
 
-    const bool GetInsideCryostat() {
+    bool GetInsideCryostat() {
         return insideCryostat;
+    }
+
+    G4String GetParticleName() {
+        return particleName;
     }
 
     
 private:
     // Member variables
-    G4String OutName= "sim_output";
+    G4String OutName = "sim_output";
     // G4String BasicOutName= "basic_output";
     G4String MacName;    
-    G4int runevt=0;
+    G4int runevt = 0;
     bool Allrecord = false;
 	bool randomGunLocation = false;  // Flag to determine if random location is activated
     bool posResScan = false;  // Flag to determine if position resolution scan is activated
     bool insideCryostat = false;  // Flag to determine if proton is outside (realistic) or inside (better for debugging) cryostat
+    G4String particleName = "proton";
 	//G4double CurrentEvtEdep = 0;
 	
     std::vector<G4ThreeVector> gunpositions; // Vector to store position data

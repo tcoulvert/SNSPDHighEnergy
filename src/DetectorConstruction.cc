@@ -542,6 +542,7 @@ void DetectorConstruction::SetupGeometry()
 		// Position along y for each strip, considering the thickness and the spacing
 		G4double strip_y_pos = -(dp_stripDimY / 2) + i * (dp_stripThickness + dp_stripSpacing);
     G4double wrap_y_pos = strip_y_pos + (dp_stripThickness / 2) + (dp_stripSpacing / 2);
+    // G4cout<< " ### wire " << i << ", y_pos = " << strip_y_pos <<G4endl;
 
     G4double startAngle = 0.*CLHEP::deg;
     G4double endAngle = 180.*CLHEP::deg;

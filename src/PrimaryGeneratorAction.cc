@@ -54,14 +54,12 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
   G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
 
   // Define the proton particle
-  G4String particleName = "proton";
-  // G4String particleName = "phononL";
-  G4ParticleDefinition* particle_p = particleTable->FindParticle(particleName);
+  G4ParticleDefinition* particle_p = particleTable->FindParticle(PassArgs->GetParticleName());
   
   // Set particle properties for 120 GeV proton
   fParticleGun->SetParticleDefinition(particle_p);
   fParticleGun->SetParticleMomentum(120. * GeV); // Set momentum to 120 GeV 
-  if (particleName == "phononL") {
+  if (PassArgs->GetParticleName() == "phononL") {
     fParticleGun->SetParticleMomentum(0.03 * eV); // Set momentum to 0.03 eV
   }
 
@@ -80,10 +78,16 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     if (PassArgs->GetInsideCryostat()) {
       pos = G4ThreeVector(0. * CLHEP::mm, 0. * CLHEP::mm, -100. * CLHEP::mm);
     }
-    if (particleName == "phononL") {
-      // middle of SiO2 toplayer = -1.525260 mm
-      // middle of SiO2 substrate = -1.525120 mm -> if using this one switch gun direction for larger event yield
-		  pos = G4ThreeVector(0. * CLHEP::mm, 0.002 * CLHEP::mm, -1.525260 * CLHEP::mm);
+    if (PassArgs->GetParticleName() == "phononL") {
+      // middle of SiO2 toplayer
+      // pos = G4ThreeVector(0. * CLHEP::mm, 0. * CLHEP::mm, -1.525260 * CLHEP::mm);
+      // middle of aSi (cap on superconducting wire)
+      pos = G4ThreeVector(0. * CLHEP::mm, 0. * CLHEP::mm, -1.525244 * CLHEP::mm);
+      // middle of WSi (superconducting wire)
+      // pos = G4ThreeVector(0. * CLHEP::mm, 0. * CLHEP::mm, -1.525241 * CLHEP::mm);
+      // middle of SiO2 substrate -> if using this one switch gun direction for larger event yield
+		  // pos = G4ThreeVector(0. * CLHEP::mm, 0. * CLHEP::mm, -1.525120 * CLHEP::mm);
+      // fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0, 0, -1));
     }
 	  PassArgs->StorePosition(pos);
 	}

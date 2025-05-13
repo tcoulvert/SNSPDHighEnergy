@@ -40,6 +40,11 @@ MyG4Args::MyG4Args(int mainargc, char** mainargv) {
             posResScan = true;
         }else if(strcmp(mainargv[j], "-insideCryostat") == 0) {
             insideCryostat = true;
+        }else if(strcmp(mainargv[j],"-particleName")==0)
+        {   
+            particleName=mainargv[j+1];j=j+1;
+            G4cout<< " ### Generate "<< particleName <<G4endl;   
+                
         }
     }
 
