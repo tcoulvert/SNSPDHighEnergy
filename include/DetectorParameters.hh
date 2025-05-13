@@ -30,8 +30,7 @@ namespace DetectorParameters
   constexpr double dp_fridgeInnerRadiusShield = 0.124155 * CLHEP::m;
   constexpr double dp_fridgeOuterRadiusShield = 0.127 * CLHEP::m;
   constexpr double dp_fridgeHeight = 0.127 * CLHEP::m;
-  
-  double test = 1 * CLHEP::deg;
+
 
   //----------------------------------------------------------------
   //Misc
