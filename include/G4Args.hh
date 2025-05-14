@@ -94,6 +94,9 @@ public:
     G4String GetParticleName() {
         return particleName;
     }
+    G4int GetNParticles() {
+        return nParticles;
+    }
 
     
 private:
@@ -106,9 +109,10 @@ private:
 	bool randomGunLocation = false;  // Flag to determine if random location is activated
     bool posResScan = false;  // Flag to determine if position resolution scan is activated
     G4ThreeVector particlePos = ConvertToPos(); // Location where particle is generated, default is outside cryostat
-    G4double particleMom = 1.;  // Default is 1 GeV
+    G4double particleMom = 1.;  // Default is 1 MeV
     G4ThreeVector particleMomDir = G4ThreeVector(0, 0, 1);  // Default is +z direction
     G4String particleName = "proton";
+    G4int nParticles = 1;  // Number of particles per event to generate
 	//G4double CurrentEvtEdep = 0;
 	
     std::vector<G4ThreeVector> gunpositions; // Vector to store position data

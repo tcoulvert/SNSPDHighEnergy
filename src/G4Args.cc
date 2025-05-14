@@ -98,6 +98,12 @@ MyG4Args::MyG4Args(int mainargc, char** mainargv) {
             particleName = mainargv[j+1]; j=j+1;
             G4cout<< " ### Generate "<< particleName <<G4endl;   
                 
+        }else if (strcmp(mainargv[j],"-nParticles")==0)
+        {   
+
+            nParticles = atoi(mainargv[j+1]); j=j+1;
+            G4cout<< " ### Generate "<< nParticles << " particles per events" <<G4endl;   
+                
         }
     }
 

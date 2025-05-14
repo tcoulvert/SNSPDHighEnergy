@@ -88,12 +88,13 @@ G4bool SensitiveDetector::IsHit(const G4Step* step,
         step->GetTrack()->GetTrackStatus() == fStopAndKill &&
         postStepPoint->GetStepStatus() == fGeomBoundary
     );
-    G4bool deposited = step->GetNonIonizingEnergyDeposit() > 0.;
+    G4bool depositedNonzeroNonIonizingEnergy = step->GetNonIonizingEnergyDeposit() > 0.;
+    G4bool depositedNonzeroEnergy = step->GetTotalEnergyDeposit() > 0.;
 
-    G4cout<<"### recorded "<< particle <<" hit, will it be recorded? "<< (!isPhonon | (deadAtBoundary && deposited)) <<G4endl;
+    G4cout<<"### Detected " << std::setprecision(8) << step->GetTotalEnergyDeposit() * 1e6 << " eV hit by "<< particle->GetParticleName() << " @ " << particle <<" of energy " << track->GetKineticEnergy() * 1e6 << " eV, will it be recorded? "<< ((!isPhonon && depositedNonzeroEnergy) | (isPhonon && deadAtBoundary && depositedNonzeroNonIonizingEnergy)) <<G4endl;
 
-    if (!isPhonon) { return true; }
-    else { return deadAtBoundary && deposited; }
+    if (!isPhonon) { return depositedNonzeroEnergy; }
+    else { return deadAtBoundary && depositedNonzeroNonIonizingEnergy; }
 
     // //A phonon that is stopped and killed at a boundary with a
     // //nonzero energy deposition.

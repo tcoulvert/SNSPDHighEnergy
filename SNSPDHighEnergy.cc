@@ -52,7 +52,6 @@ int main(int argc, char** argv)
  // Set mandatory initialization classes
  //
  DetectorConstruction* detector = new DetectorConstruction(myG4Args);
- detector->Construct();
  runManager->SetUserInitialization(detector);
 
  G4cout<< " ### Starting Define Physics" <<G4endl;

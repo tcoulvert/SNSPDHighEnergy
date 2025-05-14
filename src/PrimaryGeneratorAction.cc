@@ -28,7 +28,7 @@ using namespace std;
 
 PrimaryGeneratorAction::PrimaryGeneratorAction(MyG4Args* MainArgs) { 
   PassArgs = MainArgs;
-  fParticleGun = new G4ParticleGun(1);
+  fParticleGun = new G4ParticleGun(PassArgs->GetNParticles());
 
   // default particle kinematics ("geantino" triggers random phonon choice)
   //  fParticleGun->SetParticleDefinition(G4Geantino::Definition());
@@ -58,14 +58,13 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
   
   // Set particle properties for 120 GeV proton
   fParticleGun->SetParticleDefinition(particle_p);
-  fParticleGun->SetParticleMomentum(PassArgs->GetParticleMom() * CLHEP::GeV); // Set momentum to 120 GeV
+  fParticleGun->SetParticleMomentum(PassArgs->GetParticleMom() * CLHEP::MeV); // Set momentum to 120 GeV
 
   // Set particle direction to +z
   fParticleGun->SetParticleMomentumDirection(PassArgs->GetParticleMomDir());
     
 	// Declare pos outside the if-else blocks
 	G4ThreeVector pos;
-
 	// Check if randomGunLocation is true or false
 	if (PassArgs->GetRandomGunLocation() || PassArgs->GetPosResScan()) {
 		pos = PassArgs->GetPosition(anEvent->GetEventID());

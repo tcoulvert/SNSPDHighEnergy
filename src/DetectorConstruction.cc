@@ -382,7 +382,7 @@ void DetectorConstruction::SetupGeometry()
   //----------------------------------------------------------------
   //Max allowed step-size in substrate
   G4UserLimits* substrateUserLimits = new G4UserLimits();
-  substrateUserLimits->SetMaxAllowedStep(1. * CLHEP::nm);
+  substrateUserLimits->SetMaxAllowedStep(10. * CLHEP::nm);
   G4UserLimits* wireUserLimits = new G4UserLimits();
 	wireUserLimits->SetMaxAllowedStep(0.05 * CLHEP::nm);
 
@@ -464,9 +464,9 @@ void DetectorConstruction::SetupGeometry()
   
   // G4LatticeLogical* logic_SiO2Lattice = LM->LoadLattice(fSiO2, "SiO2");
   G4LatticeLogical* logic_SiO2Lattice = LM->LoadLattice(fSiO2, "Si");
-  G4LatticePhysical* phys_SiO2Lattice = new G4LatticePhysical(logic_SiO2Lattice);
-  phys_SiO2Lattice->SetMillerOrientation(1,0,0); 
-  LM->RegisterLattice(phys_SiO2substrate, phys_SiO2Lattice);
+  G4LatticePhysical* phys_SiO2substrateLattice = new G4LatticePhysical(logic_SiO2Lattice);
+  phys_SiO2substrateLattice->SetMillerOrientation(1,0,0); 
+  LM->RegisterLattice(phys_SiO2substrate, phys_SiO2substrateLattice);
 
   G4VisAttributes* SiO2substrateVisAtt= new G4VisAttributes(G4Colour(0.6,0.6,0.6));
   SiO2substrateVisAtt->SetVisibility(true);
@@ -507,7 +507,9 @@ void DetectorConstruction::SetupGeometry()
 		true
 	);
 
-  LM->RegisterLattice(phys_SiO2toplayer, phys_SiO2Lattice);
+  G4LatticePhysical* phys_SiO2toplayerLattice = new G4LatticePhysical(logic_SiO2Lattice);
+  phys_SiO2toplayerLattice->SetMillerOrientation(1,0,0);
+  LM->RegisterLattice(phys_SiO2toplayer, phys_SiO2toplayerLattice);
 
   G4VisAttributes* SiO2toplayerVisAtt= new G4VisAttributes(G4Colour(0.8,0.8,0.8));
   SiO2toplayerVisAtt->SetVisibility(true);
@@ -623,6 +625,18 @@ void DetectorConstruction::SetupGeometry()
 		0,
 		true
 	);
+
+  // G4LatticeLogical* logic_WSiLattice = LM->LoadLattice(fWSi, "WSi");
+  G4LatticeLogical* logic_WSiLattice = LM->LoadLattice(fWSi, "Si");
+  G4LatticePhysical* phys_WSiLattice = new G4LatticePhysical(logic_WSiLattice);
+  phys_WSiLattice->SetMillerOrientation(1,0,0);
+  LM->RegisterLattice(phys_WSiWire, phys_WSiLattice);
+
+  // G4LatticeLogical* logic_aSiLattice = LM->LoadLattice(faSi, "aSi");
+  G4LatticeLogical* logic_aSiLattice = LM->LoadLattice(faSi, "Si");
+  G4LatticePhysical* phys_aSiLattice = new G4LatticePhysical(logic_aSiLattice);
+  phys_aSiLattice->SetMillerOrientation(1,0,0);
+  LM->RegisterLattice(phys_aSiWire, phys_aSiLattice);
 
   //Set up border surfaces
   G4CMPLogicalBorderSurface* border_aSiWire_WSiWire = new G4CMPLogicalBorderSurface("border_aSiStrip_WSiStrip", phys_aSiWire, phys_WSiWire, faSiWSiInterface);
