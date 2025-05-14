@@ -173,7 +173,7 @@ void RunAction::EndOfRunAction(const G4Run* run)
 			// Iterate through the energy data for each particle type in this event
 			for (const auto& energyEntry : energyByParticle) {
 				G4cout << "  Particle type: " << energyEntry.first << ", "
-					   << "Total energy deposited: " << energyEntry.second / MeV << " MeV" << G4endl;
+					   << "Total energy deposited: " << energyEntry.second / eV << " eV" << G4endl;
 			// Print event number and gun position
 			G4cout << "  Impact location (mm): X = " << GunX
 				   << ", Y = " << GunY

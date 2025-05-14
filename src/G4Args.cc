@@ -2,6 +2,7 @@
 #include <cstring>  // For strcmp
 #include <iostream> // For G4cout
 #include <unistd.h> // For exit()
+#include <regex>
 #include "CLHEP/Units/SystemOfUnits.h"
 
 // Constructor: Process command-line arguments
@@ -13,6 +14,7 @@ MyG4Args::MyG4Args(int mainargc, char** mainargv) {
 
         // Check for "-o" argument to set the output name
         if (strcmp(mainargv[j], "-o") == 0) {
+
             if (j + 1 < mainargc) { // Ensure there's a next argument
                 OutName = mainargv[j + 1];
                 G4cout << "### Changed Output Name to: " << OutName << G4endl;
@@ -21,14 +23,17 @@ MyG4Args::MyG4Args(int mainargc, char** mainargv) {
                 G4cerr << "### Error: Missing output name after '-o'" << G4endl;
                 exit(EXIT_FAILURE);
             }
+
         }
 	    // Check for "-random" argument to activate random particle generator location
 		if (strcmp(mainargv[j], "-rndgun") == 0) {
+
 			randomGunLocation = true;
 			G4cout << "### Random particle location activated." << G4endl;
+
 		}else if(strcmp(mainargv[j],"-runevt")==0)
         {   
-            runevt=atoi(mainargv[j+1]);j=j+1;
+            runevt = atoi(mainargv[j+1]); j=j+1;
             G4cout<< " ### Run "<< runevt <<" evts" <<G4endl;     
                 
         }else if(strcmp(mainargv[j],"-Allrecord")==0)
@@ -36,13 +41,61 @@ MyG4Args::MyG4Args(int mainargc, char** mainargv) {
             Allrecord = true;
             G4cout<< " ### Allrecord true, storing all impacts even in Edep==0 (needed for storing impact initial point)" <<G4endl;     
                 
-        }else if(strcmp(mainargv[j], "-PosResScan") == 0) {  // do pos res scan (across wire) by default
+        }else if(strcmp(mainargv[j], "-PosResScan") == 0) 
+        {  // do pos res scan (across wire) by default
             posResScan = true;
-        }else if(strcmp(mainargv[j], "-insideCryostat") == 0) {
-            insideCryostat = true;
+        }else if(strcmp(mainargv[j], "-particlePos") == 0) 
+        {
+
+            std::string particleArg = mainargv[j+1]; j=j+1;
+            std::regex pattern(",");
+            if (std::regex_search(particleArg, pattern)) {
+                std::vector<double> particlexyz;
+                size_t pos = 0;
+                std::string token;
+                while ((pos = particleArg.find(",")) != std::string::npos) {
+                    token = particleArg.substr(0, pos);
+                    particlexyz.push_back(atof(token.c_str()));
+                    particleArg.erase(0, pos + 1);
+                }
+                particlexyz.push_back(atof(particleArg.c_str()));
+
+                particlePos = ConvertToPos(particlexyz);
+            } else {
+                particlePos = ConvertToPos(particleArg);
+            }
+            
+            G4cout<< " ### Generate particle at "<< particlePos <<G4endl; 
+
+        }else if(strcmp(mainargv[j], "-particleMom") == 0) 
+        {
+
+            particleMom = atof(mainargv[j+1]); j=j+1;
+            G4cout<< " ### Generate particle with momentum "<< particleMom << " GeV" <<G4endl; 
+
+        }else if(strcmp(mainargv[j], "-particleMomDir") == 0) 
+        {
+
+            std::string particleArg = mainargv[j+1]; j=j+1;
+            std::regex pattern(",");
+            std::vector<double> particlexyz;
+            size_t pos = 0;
+            std::string token;
+            while ((pos = particleArg.find(",")) != std::string::npos) {
+                token = particleArg.substr(0, pos);
+                particlexyz.push_back(atof(token.c_str()));
+                particleArg.erase(0, pos + 1);
+            }
+            particlexyz.push_back(atof(particleArg.c_str()));
+
+            particleMomDir = ConvertToPos(particlexyz);
+
+            G4cout<< " ### Generate particle with momentum direction "<< particleMomDir <<G4endl; 
+
         }else if(strcmp(mainargv[j],"-particleName")==0)
         {   
-            particleName=mainargv[j+1];j=j+1;
+
+            particleName = mainargv[j+1]; j=j+1;
             G4cout<< " ### Generate "<< particleName <<G4endl;   
                 
         }

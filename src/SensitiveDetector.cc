@@ -90,6 +90,8 @@ G4bool SensitiveDetector::IsHit(const G4Step* step,
     );
     G4bool deposited = step->GetNonIonizingEnergyDeposit() > 0.;
 
+    G4cout<<"### recorded "<< particle <<" hit, will it be recorded? "<< (!isPhonon | (deadAtBoundary && deposited)) <<G4endl;
+
     if (!isPhonon) { return true; }
     else { return deadAtBoundary && deposited; }
 

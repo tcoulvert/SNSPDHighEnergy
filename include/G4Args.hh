@@ -82,10 +82,15 @@ public:
 		return CurrentEvtEdep;
 	}
 
-    bool GetInsideCryostat() {
-        return insideCryostat;
+    G4ThreeVector GetParticlePos() {
+        return particlePos;
     }
-
+    G4double GetParticleMom() {
+        return particleMom;
+    }
+    G4ThreeVector GetParticleMomDir() {
+        return particleMomDir;
+    }
     G4String GetParticleName() {
         return particleName;
     }
@@ -100,7 +105,9 @@ private:
     bool Allrecord = false;
 	bool randomGunLocation = false;  // Flag to determine if random location is activated
     bool posResScan = false;  // Flag to determine if position resolution scan is activated
-    bool insideCryostat = false;  // Flag to determine if proton is outside (realistic) or inside (better for debugging) cryostat
+    G4ThreeVector particlePos = ConvertToPos(); // Location where particle is generated, default is outside cryostat
+    G4double particleMom = 1.;  // Default is 1 GeV
+    G4ThreeVector particleMomDir = G4ThreeVector(0, 0, 1);  // Default is +z direction
     G4String particleName = "proton";
 	//G4double CurrentEvtEdep = 0;
 	
@@ -109,5 +116,24 @@ private:
     std::unordered_map<G4String, G4double, G4StringHasher> totalEnergyByParticle; // Total energy by particle type
     std::unordered_map<G4int, std::unordered_map<G4String, G4double, G4StringHasher>> totalEnergyByParticleAndEvent; // Energy by event and particle type
     std::vector<HitData> hitRecords; // Vector to store hit data
+
+    G4ThreeVector ConvertToPos(std::string posName="outsideCryostat") {  // By default in CLHEP lengths are in mm and energy is in MeV
+        if (posName == "insideCryostat") {
+            return G4ThreeVector(0., 0., -100.);
+        }else if (posName == "SiO2TopLayer") {
+            return G4ThreeVector(0., 0., -1.525260);
+        }else if (posName == "aSi") {
+            return G4ThreeVector(0., 0., -1.5252445);
+        }else if (posName == "WSi") {
+            return G4ThreeVector(0., 0., -1.5252415);
+        }else if (posName == "SiO2Substrate") {
+            return G4ThreeVector(0., 0., -1.525239);
+        }else {
+            return G4ThreeVector(0., 0., -130.);
+        }
+    }
+    G4ThreeVector ConvertToPos(std::vector<double> particlexyz) {
+        return G4ThreeVector(particlexyz[0], particlexyz[1], particlexyz[2]);
+    }
 };
 #endif
