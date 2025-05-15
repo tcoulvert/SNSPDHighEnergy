@@ -38,6 +38,45 @@
 
 using namespace DetectorParameters;
 
+
+void defaultUIManagerSettings(G4UImanager* UImanager) {
+
+  // Open the visualization and set up the scene
+  UImanager->ApplyCommand("/vis/open OGL");
+  UImanager->ApplyCommand("/vis/viewer/set/viewpointVector 0 0 1");
+  UImanager->ApplyCommand("/vis/viewer/zoom 1.4");
+  UImanager->ApplyCommand("/vis/drawVolume");
+  UImanager->ApplyCommand("/vis/viewer/set/autoRefresh true");
+  // UImanager->ApplyCommand("/vis/scene/add/trajectories smooth");
+  // UImanager->ApplyCommand("/vis/scene/endOfEventAction accumulate");
+  // UImanager->ApplyCommand("/vis/scene/add/axes");
+
+  // Configure step point visualization
+  UImanager->ApplyCommand("/tracking/verbose 2");
+  UImanager->ApplyCommand("/tracking/storeTrajectory 1");
+  UImanager->ApplyCommand("/vis/scene/endOfEventAction accumulate");
+  UImanager->ApplyCommand("/vis/scene/add/trajectories");
+
+  UImanager->ApplyCommand("/vis/modeling/trajectories/create/drawByParticleID");
+  UImanager->ApplyCommand("/vis/modeling/trajectories/drawByParticleID-0/set proton White");
+  UImanager->ApplyCommand("/vis/modeling/trajectories/drawByParticleID-0/set e- Yellow");
+  UImanager->ApplyCommand("/vis/modeling/trajectories/drawByParticleID/set G4CMPDriftElectron Violet");
+  UImanager->ApplyCommand("/vis/modeling/trajectories/drawByParticleID/set G4CMPDriftHole Orange");
+  UImanager->ApplyCommand("/vis/modeling/trajectories/drawByParticleID/set phononTS Red");
+  UImanager->ApplyCommand("/vis/modeling/trajectories/drawByParticleID/set phononTF Green");
+  UImanager->ApplyCommand("/vis/modeling/trajectories/drawByParticleID/set phononL Blue");
+
+  UImanager->ApplyCommand("/vis/viewer/set/style wireframe");
+  UImanager->ApplyCommand("/vis/viewer/set/hiddenMarker true");
+  UImanager->ApplyCommand("/vis/viewer/set/viewpointThetaPhi 0 90");
+  UImanager->ApplyCommand("/vis/viewer/zoom 1.6");
+
+  UImanager->ApplyCommand("/g4cmp/producePhonons 1");
+  UImanager->ApplyCommand("/g4cmp/sampleLuke 1");
+  UImanager->ApplyCommand("/g4cmp/produceCharges 0.00001");
+
+}
+
 int main(int argc, char** argv)
 {
   MyG4Args* myG4Args = new MyG4Args(argc, argv);
@@ -62,7 +101,7 @@ int main(int argc, char** argv)
 //  physics->RegisterPhysics(new G4RadioactiveDecayPhysics); // For radioactive decay
 //  physics->RegisterPhysics(new G4EmLivermorePhysics); // For low energy photons
  G4StepLimiterPhysics* stepLimitPhys = new G4StepLimiterPhysics();
- stepLimitPhys->SetApplyToAll(true); // activates step limit for ALL particles
+//  stepLimitPhys->SetApplyToAll(true); // activates step limit for ALL particles
  physics->RegisterPhysics(stepLimitPhys);
 
  physics->SetCuts();
@@ -87,34 +126,7 @@ int main(int argc, char** argv)
   // Get the UI manager and apply visualization commands
   G4UImanager *UImanager = G4UImanager::GetUIpointer();
 
-  // Open the visualization and set up the scene
-  UImanager->ApplyCommand("/vis/open OGL");
-  UImanager->ApplyCommand("/vis/viewer/set/viewpointVector 0 0 1");
-  UImanager->ApplyCommand("/vis/viewer/zoom 1.4");
-  UImanager->ApplyCommand("/vis/drawVolume");
-  UImanager->ApplyCommand("/vis/viewer/set/autoRefresh true");
-  UImanager->ApplyCommand("/vis/scene/add/trajectories smooth");
-  UImanager->ApplyCommand("/vis/scene/endOfEventAction accumulate");
-  UImanager->ApplyCommand("/vis/scene/add/axes");
-
-  // Configure step point visualization
-  UImanager->ApplyCommand("/vis/modeling/trajectories/create/drawByParticleID");
-  UImanager->ApplyCommand("/vis/modeling/trajectories/drawByParticleID-0/set proton White");
-  UImanager->ApplyCommand("/vis/modeling/trajectories/drawByParticleID-0/set e- Yellow");
-  UImanager->ApplyCommand("/vis/modeling/trajectories/drawByParticleID/set G4CMPDriftElectron Violet");
-  UImanager->ApplyCommand("/vis/modeling/trajectories/drawByParticleID/set G4CMPDriftHole Orange");
-  UImanager->ApplyCommand("/vis/modeling/trajectories/drawByParticleID/set phononTS Red");
-  UImanager->ApplyCommand("/vis/modeling/trajectories/drawByParticleID/set phononTF Green");
-  UImanager->ApplyCommand("/vis/modeling/trajectories/drawByParticleID/set phononL Blue");
-
-  UImanager->ApplyCommand("/vis/viewer/set/style wireframe");
-  UImanager->ApplyCommand("/vis/viewer/set/hiddenMarker true");
-  UImanager->ApplyCommand("/vis/viewer/set/viewpointThetaPhi 0 90");
-  UImanager->ApplyCommand("/vis/viewer/zoom 1.6");
-
-  UImanager->ApplyCommand("/g4cmp/producePhonons 0.1");
-  UImanager->ApplyCommand("/g4cmp/sampleLuke 0.1");
-  UImanager->ApplyCommand("/g4cmp/produceCharges 0.001");
+  defaultUIManagerSettings(UImanager);
   
   ui->SessionStart();
 
@@ -126,6 +138,25 @@ int main(int argc, char** argv)
  {
 
   runManager->Initialize();
+
+  if (myG4Args->GetRunevt() == 1) 
+  {
+
+    G4UIExecutive* ui = new G4UIExecutive(argc, argv);
+
+    // Initialize the visualization manager
+    G4VisManager *visManager = new G4VisExecutive();
+    visManager->Initialize();
+
+    // Get the UI manager and apply visualization commands
+    G4UImanager *UImanager = G4UImanager::GetUIpointer();
+
+    defaultUIManagerSettings(UImanager);
+    
+    ui->SessionStart();
+
+  }
+
   // Run the specified number of events
   G4int numberOfEvents = myG4Args->GetRunevt();
   G4cout << "### Running " << numberOfEvents << " events." << G4endl;
@@ -154,5 +185,7 @@ int main(int argc, char** argv)
 
  return 0;
 }
+
+
 
 

@@ -42,13 +42,11 @@
 /g4cmp/produceCharges 0.0001
 
 # Particle generation
-/gps/number 1
-/gps/particle mu-
-/gps/pos/type Point
-/gps/direction 0 -0.7 -1
-/gps/pos/centre 0.0 0.5 0.56 cm # A bit above the chip top
-/gps/ene/type Mono
-/gps/energy 4 GeV
+/gun/number 1
+/gun/particle mu-
+/gun/position 0 -0.5 -0.5252415 mm
+/gun/momentumAmp 4 GeV
+/gun/direction 0 0.5 1
 /run/beamOn 1
 
 

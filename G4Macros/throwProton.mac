@@ -42,13 +42,12 @@
 /g4cmp/produceCharges 0.001
 
 # Particle generation
-/gps/number 1
-/gps/particle proton
-/gps/pos/type Point
-/gps/direction 0 0 -1
-/gps/pos/centre 0.0 0.0 0.0 cm  # Middle of the chip
-/gps/ene/type Mono
-/gps/energy 120 GeV
+/gun/number 1
+/gun/particle proton
+/gun/position 0 0 -100 mm  # inside cryostat
+#/gun/position 0 0 -120 mm  # outside cryostat
+/gun/momentumAmp 120 GeV
+/gun/direction 0 0 1
 /run/beamOn 1
 
 

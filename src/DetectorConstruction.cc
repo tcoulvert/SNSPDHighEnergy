@@ -382,7 +382,7 @@ void DetectorConstruction::SetupGeometry()
   //----------------------------------------------------------------
   //Max allowed step-size in substrate
   G4UserLimits* substrateUserLimits = new G4UserLimits();
-  substrateUserLimits->SetMaxAllowedStep(10. * CLHEP::nm);
+  substrateUserLimits->SetMaxAllowedStep(50. * CLHEP::nm);
   G4UserLimits* wireUserLimits = new G4UserLimits();
 	wireUserLimits->SetMaxAllowedStep(0.05 * CLHEP::nm);
 
@@ -665,8 +665,8 @@ void DetectorConstruction::AttachPhononSensor(G4CMPSurfaceProperty * surfProp)
 
   //Specify properties of the niobium sensors
   auto sensorProp = surfProp->GetPhononMaterialPropertiesTablePointer();
-  sensorProp->AddConstProperty("filmAbsorption", 0.0);              //NOT WELL MOTIVATED - probably parametrize and put on slider?
-  sensorProp->AddConstProperty("filmThickness", 90.*CLHEP::nm);     //Accurate for our thin film.
+  sensorProp->AddConstProperty("filmAbsorption", 1.0);              //NOT WELL MOTIVATED - probably parametrize and put on slider?
+  sensorProp->AddConstProperty("filmThickness", 3.*CLHEP::nm);     //Accurate for our thin film.
   sensorProp->AddConstProperty("gapEnergy", 1.6e-3*CLHEP::eV);      //Reasonably motivated. Actually, looks like Novotny and Meincke are quoting 2Delta, and this is delta. Nuss and Goossen mention that Nb has a delta value closer to this.
   sensorProp->AddConstProperty("lowQPLimit", 3.);                   //NOT WELL MOTIVATED YET -- Dunno how to inform this...
   sensorProp->AddConstProperty("phononLifetime", 4.17*CLHEP::ps);   //Kaplan paper says 242ps for Al, same table says 4.17ps for characteristic time for Nb.

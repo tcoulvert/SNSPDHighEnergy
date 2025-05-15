@@ -91,38 +91,16 @@ G4bool SensitiveDetector::IsHit(const G4Step* step,
     G4bool depositedNonzeroNonIonizingEnergy = step->GetNonIonizingEnergyDeposit() > 0.;
     G4bool depositedNonzeroEnergy = step->GetTotalEnergyDeposit() > 0.;
 
-    G4cout<<"### Detected " << std::setprecision(8) << step->GetTotalEnergyDeposit() * 1e6 << " eV hit by "<< particle->GetParticleName() << " @ " << particle <<" of energy " << track->GetKineticEnergy() * 1e6 << " eV, will it be recorded? "<< ((!isPhonon && depositedNonzeroEnergy) | (isPhonon && deadAtBoundary && depositedNonzeroNonIonizingEnergy)) <<G4endl;
-
+    if (isPhonon) {
+        G4cout<<"### Detected " << std::setprecision(8) << step->GetNonIonizingEnergyDeposit() * 1e6 << " eV hit by "<< particle->GetParticleName() << " @ " << particle <<" of energy " << track->GetKineticEnergy() * 1e6 << " eV, will it be recorded? "<< (deadAtBoundary && depositedNonzeroNonIonizingEnergy) <<G4endl;
+        G4cout<<"### ### Stop and kill? " << (step->GetTrack()->GetTrackStatus() == fStopAndKill) << G4endl;
+        G4cout<<"### ### Geometry boundary? " << (postStepPoint->GetStepStatus() == fGeomBoundary) << G4endl;
+        G4cout<<"### ### Nonzero energy? " << depositedNonzeroNonIonizingEnergy << G4endl;
+    }else {
+        G4cout<<"### Detected " << std::setprecision(8) << step->GetTotalEnergyDeposit() * 1e6 << " eV hit by "<< particle->GetParticleName() << " @ " << particle <<" of energy " << track->GetKineticEnergy() * 1e6 << " eV, will it be recorded? "<< (!isPhonon && depositedNonzeroEnergy) <<G4endl;
+    }
+    
     if (!isPhonon) { return depositedNonzeroEnergy; }
     else { return deadAtBoundary && depositedNonzeroNonIonizingEnergy; }
-
-    // //A phonon that is stopped and killed at a boundary with a
-    // //nonzero energy deposition.
-    // G4bool phononParticle = (
-    //     particle == G4PhononLong::Definition() ||
-    //     particle == G4PhononTransFast::Definition() ||
-    //     particle == G4PhononTransSlow::Definition()
-    // );
-    // if (!phononParticle) { // always return true for non-phonons
-    //     return true;
-    // }
-
-    // G4bool correctPhononStatus = (
-    //     step->GetTrack()->GetTrackStatus() == fStopAndKill &&
-    //     postStepPoint->GetStepStatus() == fGeomBoundary &&
-    //     step->GetNonIonizingEnergyDeposit() > 0.
-    // );
-
-    // //A phonon that is stopped and killed at a boundary with a
-    // //nonzero energy deposition.
-    // return phononParticle && correctPhononStatus;
-
-
-    // // Aphonon that satisfies all of the above things, but also landed in a specific
-    // // volume name. Here, we're looking for a volume that contains the words "WSiWire", which
-    // // in this geometry is the superconducting nanowire. (Can also just put this info in
-    // // the output file and sort through this in analysis, but this helps us minimize output filesize.)
-    // G4bool landedOnTargetSurface = (postStepPoint->GetPhysicalVolume()->GetName().find("WSiWire") != std::string::npos);
-    // return phononParticle && correctPhononStatus && landedOnTargetSurface;
 
 }

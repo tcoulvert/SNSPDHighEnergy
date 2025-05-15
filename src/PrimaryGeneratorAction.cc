@@ -29,12 +29,6 @@ using namespace std;
 PrimaryGeneratorAction::PrimaryGeneratorAction(MyG4Args* MainArgs) { 
   PassArgs = MainArgs;
   fParticleGun = new G4ParticleGun(PassArgs->GetNParticles());
-
-  // default particle kinematics ("geantino" triggers random phonon choice)
-  //  fParticleGun->SetParticleDefinition(G4Geantino::Definition());
-  //  fParticleGun->SetParticleMomentumDirection(G4RandomDirection());
-  //  fParticleGun->SetParticlePosition(G4ThreeVector(0.0,0.0,0.4998095*CLHEP::cm));
-  //  fParticleGun->SetParticleEnergy(0.0075*eV);  
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....

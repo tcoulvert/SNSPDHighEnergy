@@ -116,8 +116,8 @@ MyG4Args::MyG4Args(int mainargc, char** mainargv) {
             // Generate random positions within a 10-micron width in X and Y (range: -5 microns to +5 microns)
             G4double randomX = -25.0 + (static_cast<double>(rand()) / RAND_MAX) * 50.0;  // Random value between -50 and +50 microns
             G4double randomY = -25.0 + (static_cast<double>(rand()) / RAND_MAX) * 50.0;  // Random value between -50 and +50 microns
-            // Set position with random X and Y, fixed Z at 0 mm
-            gunpositions.push_back(G4ThreeVector(randomX / 1000 * CLHEP::mm, randomY / 1000 * CLHEP::mm, 0 * CLHEP::mm));
+            // Set position with random X and Y, fixed Z at -1.525230 mm (within SiO2 substrate)
+            gunpositions.push_back(G4ThreeVector(randomX / 1000 * CLHEP::mm, randomY / 1000 * CLHEP::mm, -1.525230 * CLHEP::mm));
 
         }
     }else if (posResScan){
