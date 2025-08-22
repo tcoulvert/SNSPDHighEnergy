@@ -21,7 +21,7 @@ ActionInitialization::~ActionInitialization() {
 void ActionInitialization::Build() const {
   SetUserAction(new PrimaryGeneratorAction(PassArgs));
   SetUserAction(new G4CMPStackingAction);
-  SetUserAction(new SteppingAction(PassArgs));
+  // SetUserAction(new SteppingAction(PassArgs));
   
   RunAction* runAction = new RunAction(PassArgs);
   SetUserAction(new EventAction(runAction, PassArgs));

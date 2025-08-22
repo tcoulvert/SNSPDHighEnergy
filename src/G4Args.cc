@@ -71,7 +71,7 @@ MyG4Args::MyG4Args(int mainargc, char** mainargv) {
         {
 
             particleMom = atof(mainargv[j+1]); j=j+1;
-            G4cout<< " ### Generate particle with momentum "<< particleMom << " GeV" <<G4endl; 
+            G4cout<< " ### Generate particle with momentum "<< particleMom << " MeV" <<G4endl; 
 
         }else if(strcmp(mainargv[j], "-particleMomDir") == 0) 
         {

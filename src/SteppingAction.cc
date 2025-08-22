@@ -16,6 +16,7 @@
 
 #include "G4RunManager.hh"
 #include "G4StepPoint.hh"
+#include "G4VSensitiveDetector.hh"
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
@@ -38,14 +39,20 @@ SteppingAction::~SteppingAction()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 //Alternative constructor
-void SteppingAction::UserSteppingAction( const G4Step * step )
+void SteppingAction::UserSteppingAction( const G4Step* step )
 {
   //For now, simple: look at the pre-step point volume name and the track name
   //  std::cout << "REL stepping. PreSP volume name: " << step->GetPreStepPoint()->GetPhysicalVolume()->GetName() << ", track particle type: " << step->GetTrack()->GetParticleDefinition()->GetParticleName() << std::endl;
 
   //First up: do generic exporting of step information (no cuts made here)
   //ExportStepInformation(step);
-  
+
+  // G4VSensitiveDetector* fSensitive = step->GetPostStepPoint()->GetSensitiveDetector();
+  // G4cout << "located fSensitive @" << fSensitive << G4endl;
+  // if (fSensitive) {
+  //   G4cout << "located post-step hit" << G4endl;
+  //   fSensitive->Hit(step);
+  // }
   
   return;
 }
@@ -54,7 +61,7 @@ void SteppingAction::UserSteppingAction( const G4Step * step )
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 // Do a set of queries of information to test for anharmonic decay
-void SteppingAction::ExportStepInformation( const G4Step * step )
+void SteppingAction::ExportStepInformation( const G4Step* step )
 {
   //Test
   G4StepPoint * preSP = step->GetPreStepPoint();

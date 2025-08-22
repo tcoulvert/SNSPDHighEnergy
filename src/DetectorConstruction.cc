@@ -182,18 +182,21 @@ void DetectorConstruction::DefineMaterials()
 
   G4cout<< " ### - Define WSi" <<G4endl;   // Tungsten Silicide (WSi)
   G4double density_WSi = 9.3 * g/cm3;  // Approximate density of WSi
-  fWSi = new G4Material("WSi", density_WSi, 2);  // 2 elements in WSi
-    G4Element* W = nistManager->FindOrBuildElement("W");  // Tungsten element  
-    fWSi->AddElement(W, 1);  // 1 Tungsten atom
-    fWSi->AddElement(Si, 2); // 2 Silicon atoms
+  // fWSi = new G4Material("WSi", density_WSi, 2);  // 2 elements in WSi
+  //   G4Element* W = nistManager->FindOrBuildElement("W");  // Tungsten element  
+  //   fWSi->AddElement(W, 1);  // 1 Tungsten atom
+  //   fWSi->AddElement(Si, 2); // 2 Silicon atoms
+  
     
-    G4MaterialPropertiesTable *mptWSi = new G4MaterialPropertiesTable();
-    G4double energyWSi[2] = {1.5*eV, 3*eV};
-    G4double rindexWSi[2] = {4, 4};
-    mptWSi->AddProperty("RINDEX", energyWSi, rindexWSi, 2);
-    fWSi->SetMaterialPropertiesTable(mptWSi);
+  //   G4MaterialPropertiesTable *mptWSi = new G4MaterialPropertiesTable();
+  //   G4double energyWSi[2] = {1.5*eV, 3*eV};
+  //   G4double rindexWSi[2] = {4, 4};
+  //   mptWSi->AddProperty("RINDEX", energyWSi, rindexWSi, 2);
+  //   fWSi->SetMaterialPropertiesTable(mptWSi);
     
-    G4cout<< " ### Finished Material Definition " <<G4endl;
+  //   G4cout<< " ### Finished Material Definition " <<G4endl;
+
+  fWSi = nistManager->FindOrBuildMaterial("G4_Nb");
 
 }
 
@@ -645,6 +648,8 @@ void DetectorConstruction::SetupGeometry()
   G4CMPLogicalBorderSurface* border_SiO2substrate_WSiWire = new G4CMPLogicalBorderSurface("border_SiO2substrate_WSiStrip", phys_SiO2substrate, phys_WSiWire, fSiO2WSiInterface);
 
   //Set up sensitive detector
+  //  -> Make EVERYTHING sensitive detector to ensure hits get registered, and then filter 
+  //       out only hits that occur near the SNSPD wire
   G4SDManager* SDman = G4SDManager::GetSDMpointer();
   fSuperconductorSensitivity = new SensitiveDetector("SensitiveDetector", PassArgs);
   SDman->AddNewDetector(fSuperconductorSensitivity);
