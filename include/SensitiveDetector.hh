@@ -17,6 +17,7 @@ public:
 protected:
     virtual G4bool IsHit(const G4Step*, const G4TouchableHistory*) const;
     virtual G4bool ProcessHits(G4Step *aStep, G4TouchableHistory *ROhist);
+    G4double GetEnergyDep(const G4Step* step);
     
 private:
     // ProcessHits method is called for each step in the detector

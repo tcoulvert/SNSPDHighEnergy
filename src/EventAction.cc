@@ -27,7 +27,7 @@ void EventAction::BeginOfEventAction(const G4Event *anEvent)
 void EventAction::EndOfEventAction(const G4Event *anEvent)
 {
   
-    if(PassArgs->GetCurrentEvtEdep() <1e-9){
+    if(PassArgs->GetCurrentEvtEdep() < 1e-15){
         G4int eventNumber = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();
         PassArgs->AddToEnergyByParticleAndEvent("none", 0, eventNumber);
     }

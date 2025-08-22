@@ -11,11 +11,15 @@
 # (if too many tracks cause core dump => storeTrajectory 0)
 /tracking/verbose 2
 /tracking/storeTrajectory 1
-/vis/scene/endOfEventAction accumulate
+/vis/scene/endOfEventAction accumulate 1
 /vis/scene/add/trajectories
 
 # Make phonon polarization modes distinguishable
 /vis/modeling/trajectories/create/drawByParticleID
+/vis/modeling/trajectories/drawByParticleID-0/set proton White
+/vis/modeling/trajectories/drawByParticleID-0/set e- Yellow
+/vis/modeling/trajectories/drawByParticleID-0/set G4CMPDriftElectron Violet
+/vis/modeling/trajectories/drawByParticleID-0/set G4CMPDriftHole Orange
 /vis/modeling/trajectories/drawByParticleID-0/set phononTS Red 
 /vis/modeling/trajectories/drawByParticleID-0/set phononTF Green
 /vis/modeling/trajectories/drawByParticleID-0/set phononL Blue
@@ -31,4 +35,6 @@
 /vis/viewer/pan 5.0 0 mm
 /vis/viewer/zoom 1
 
-
+/g4cmp/producePhonons 0.01
+/g4cmp/sampleLuke 0.1
+/g4cmp/produceCharges 0.1

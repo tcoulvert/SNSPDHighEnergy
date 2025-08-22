@@ -182,21 +182,19 @@ void DetectorConstruction::DefineMaterials()
 
   G4cout<< " ### - Define WSi" <<G4endl;   // Tungsten Silicide (WSi)
   G4double density_WSi = 9.3 * g/cm3;  // Approximate density of WSi
-  // fWSi = new G4Material("WSi", density_WSi, 2);  // 2 elements in WSi
-  //   G4Element* W = nistManager->FindOrBuildElement("W");  // Tungsten element  
-  //   fWSi->AddElement(W, 1);  // 1 Tungsten atom
-  //   fWSi->AddElement(Si, 2); // 2 Silicon atoms
-  
+  fWSi = new G4Material("WSi", density_WSi, 2);  // 2 elements in WSi
+    G4Element* W = nistManager->FindOrBuildElement("W");  // Tungsten element  
+    fWSi->AddElement(W, 1);  // 1 Tungsten atom
+    fWSi->AddElement(Si, 2); // 2 Silicon atoms
+    G4MaterialPropertiesTable *mptWSi = new G4MaterialPropertiesTable();
+    G4double energyWSi[2] = {1.5*eV, 3*eV};
+    G4double rindexWSi[2] = {4, 4};
+    mptWSi->AddProperty("RINDEX", energyWSi, rindexWSi, 2);
+    fWSi->SetMaterialPropertiesTable(mptWSi);
     
-  //   G4MaterialPropertiesTable *mptWSi = new G4MaterialPropertiesTable();
-  //   G4double energyWSi[2] = {1.5*eV, 3*eV};
-  //   G4double rindexWSi[2] = {4, 4};
-  //   mptWSi->AddProperty("RINDEX", energyWSi, rindexWSi, 2);
-  //   fWSi->SetMaterialPropertiesTable(mptWSi);
-    
-  //   G4cout<< " ### Finished Material Definition " <<G4endl;
+    G4cout<< " ### Finished Material Definition " <<G4endl;
 
-  fWSi = nistManager->FindOrBuildMaterial("G4_Nb");
+  // fWSi = nistManager->FindOrBuildMaterial("G4_Nb");
 
 }
 
@@ -227,26 +225,35 @@ void DetectorConstruction::SetupGeometry()
     fSiCuInterface = new G4CMPSurfaceProperty("SiCuInterface",
         1.0, 0.0, 0.0, 0.0,
         1.0, 0.0, 0.0, 0.0 );
+    fCuSiInterface = new G4CMPSurfaceProperty("SiCuInterface",
+        1.0, 0.0, 0.0, 0.0,
+        0.99, 1.0, 0.0, 0.0 );
     // Si substrate to SiO2 layer interface
     fSiSiO2Interface = new G4CMPSurfaceProperty("SiSiO2Interface",
         1.0, 0.0, 0.0, 0.0,
-        0.5, 0.5, 0.0, 0.0);
+        0.9, 0.5, 0.0, 0.0);
+    fSiO2SiInterface = new G4CMPSurfaceProperty("SiSiO2Interface",
+        1.0, 0.0, 0.0, 0.0,
+        0.8, 0.5, 0.0, 0.0);
     // SiO2 ubstrate to SiO2 top layer interface
     fSiO2SiO2Interface = new G4CMPSurfaceProperty("SiO2SiO2Interface",
         1.0, 0.0, 0.0, 0.0,
-        0.05, 0.05, 0.0, 0.0);
+        0.99, 0.5, 0.0, 0.0);
     // SiO2 layer to Amorphous Silicon (non-superconducting cap) interface
     fSiO2aSiInterface = new G4CMPSurfaceProperty("SiO2aSiInterface",
-        0.5, 0.5, 0.0, 0.0,
-        0.5, 0.5, 0.0, 0.0 );
+        1.0, 0.0, 0.0, 0.0,
+        0.7, 1.0, 0.0, 0.0 );
+    faSiSiO2Interface = new G4CMPSurfaceProperty("SiO2aSiInterface",
+        1.0, 0.0, 0.0, 0.0,
+        0.9, 1.0, 0.0, 0.0 );
     // SiO2 layer to Tungsten Silicide (superconducting wire) interface
     fSiO2WSiInterface = new G4CMPSurfaceProperty("SiO2WSiInterface",
         1.0, 0.0, 0.0, 0.0,
-        1.0, 0.0, 0.0, 0.0 );
+        0.1, 1.0, 0.0, 0.0 );
     // aSi layer to WSi (interface between superconducting wire and non-superconducting cap) interface   
     faSiWSiInterface = new G4CMPSurfaceProperty("aSiWSiInterface",
-        1.0, 0.5, 0.0, 0.0,
-        1.0, 0.5, 0.0, 0.0 );
+        1.0, 0.0, 0.0, 0.0,
+        0.1, 1.0, 0.0, 0.0 );
     // SiO2 layer to vacuum interface 
     fSiO2VacuumInterface = new G4CMPSurfaceProperty("SiO2VacuumInterface",
         0.0, 1.0, 0.0, 0.0,
@@ -432,6 +439,7 @@ void DetectorConstruction::SetupGeometry()
 
   //Set up border surfaces
   G4CMPLogicalBorderSurface* border_Si_Cu = new G4CMPLogicalBorderSurface("border_Si_Cu", phys_Sisubstrate, physCu2, fSiCuInterface);
+  G4CMPLogicalBorderSurface* border_Cu_Si = new G4CMPLogicalBorderSurface("border_Cu_Si", physCu2, phys_Sisubstrate, fCuSiInterface);
 
 
 
@@ -477,6 +485,7 @@ void DetectorConstruction::SetupGeometry()
 
   //Set up border surfaces
   G4CMPLogicalBorderSurface* border_Si_SiO2 = new G4CMPLogicalBorderSurface("border_Si_SiO2", phys_Sisubstrate, phys_SiO2substrate, fSiSiO2Interface);
+  G4CMPLogicalBorderSurface* border_SiO2_Si = new G4CMPLogicalBorderSurface("border_SiO2_Si", phys_SiO2substrate, phys_Sisubstrate, fSiO2SiInterface);
 
 
 
@@ -519,8 +528,9 @@ void DetectorConstruction::SetupGeometry()
   logic_SiO2toplayer->SetVisAttributes(SiO2toplayerVisAtt);
 
   //Set up border surfaces
-  G4CMPLogicalBorderSurface* border_SiO2_SiO2 = new G4CMPLogicalBorderSurface("border_SiO2_SiO2", phys_SiO2substrate, phys_SiO2toplayer, fSiO2SiO2Interface);
-
+  G4CMPLogicalBorderSurface* border_SiO2s_SiO2t = new G4CMPLogicalBorderSurface("border_SiO2s_SiO2t", phys_SiO2substrate, phys_SiO2toplayer, fSiO2SiO2Interface);
+  G4CMPLogicalBorderSurface* border_SiO2t_SiO2s = new G4CMPLogicalBorderSurface("border_SiO2t_SiO2s", phys_SiO2toplayer, phys_SiO2substrate, fSiO2SiO2Interface);
+  G4CMPLogicalBorderSurface* border_SiO2_vacuum = new G4CMPLogicalBorderSurface("border_SiO2t_vacuum", phys_SiO2toplayer, fWorldPhys, fSiO2VacuumInterface);
 
 
 
@@ -642,8 +652,10 @@ void DetectorConstruction::SetupGeometry()
   LM->RegisterLattice(phys_aSiWire, phys_aSiLattice);
 
   //Set up border surfaces
-  G4CMPLogicalBorderSurface* border_aSiWire_WSiWire = new G4CMPLogicalBorderSurface("border_aSiStrip_WSiStrip", phys_aSiWire, phys_WSiWire, faSiWSiInterface);
   G4CMPLogicalBorderSurface* border_SiO2_aSiWire = new G4CMPLogicalBorderSurface("border_SiO2_aSiStrip", phys_SiO2toplayer, phys_aSiWire, fSiO2aSiInterface);
+  G4CMPLogicalBorderSurface* border_aSiWire_SiO2 = new G4CMPLogicalBorderSurface("border_aSiStrip_SiO2", phys_aSiWire, phys_SiO2toplayer, faSiSiO2Interface);
+
+  G4CMPLogicalBorderSurface* border_aSiWire_WSiWire = new G4CMPLogicalBorderSurface("border_aSiStrip_WSiStrip", phys_aSiWire, phys_WSiWire, faSiWSiInterface);
   G4CMPLogicalBorderSurface* border_SiO2_WSiWire = new G4CMPLogicalBorderSurface("border_SiO2_WSiStrip", phys_SiO2toplayer, phys_WSiWire, fSiO2WSiInterface);
   G4CMPLogicalBorderSurface* border_SiO2substrate_WSiWire = new G4CMPLogicalBorderSurface("border_SiO2substrate_WSiStrip", phys_SiO2substrate, phys_WSiWire, fSiO2WSiInterface);
 
@@ -653,7 +665,16 @@ void DetectorConstruction::SetupGeometry()
   G4SDManager* SDman = G4SDManager::GetSDMpointer();
   fSuperconductorSensitivity = new SensitiveDetector("SensitiveDetector", PassArgs);
   SDman->AddNewDetector(fSuperconductorSensitivity);
+  // SNSPD wire
   logic_WSiWire->SetSensitiveDetector(fSuperconductorSensitivity);
+  // SNSPD wire cap
+  logic_aSiWire->SetSensitiveDetector(fSuperconductorSensitivity);
+  // SNSPD SiO2 toplayer
+  logic_SiO2toplayer->SetSensitiveDetector(fSuperconductorSensitivity);
+  // SNSPD SiO2 substrate
+  logic_SiO2substrate->SetSensitiveDetector(fSuperconductorSensitivity);
+  // SNSPD SiO2 substrate
+  logic_Sisubstrate->SetSensitiveDetector(fSuperconductorSensitivity);
 
   // /control/execute ../SNSPDHighEnergy/G4Macros/vis.mac
 }

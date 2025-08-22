@@ -45,7 +45,7 @@ G4bool SensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *ROhist)
     // Only process hits where energy deposition is greater than 0
     if (IsHit(aStep, ROhist)) {
 
-        G4double edep = aStep->GetTotalEnergyDeposit();
+        G4double edep = GetEnergyDep(aStep);
         
         // Get position of the hit
         G4ThreeVector position = aStep->GetPostStepPoint()->GetPosition();
@@ -74,6 +74,21 @@ G4bool SensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *ROhist)
     return true;
 }
 
+G4double SensitiveDetector::GetEnergyDep(const G4Step* step)
+{
+    //Establish track/step information
+    const G4Track* track = step->GetTrack();
+    const G4StepPoint* postStepPoint = step->GetPostStepPoint();
+    const G4ParticleDefinition* particle = track->GetDefinition();
+    G4bool isPhonon = G4CMP::IsPhonon(particle);
+
+    if (isPhonon) {
+        return step->GetNonIonizingEnergyDeposit();
+    }else {
+        return step->GetTotalEnergyDeposit();
+    }
+}
+
 G4bool SensitiveDetector::IsHit(const G4Step* step,
     const G4TouchableHistory*) const
 {
@@ -88,19 +103,21 @@ G4bool SensitiveDetector::IsHit(const G4Step* step,
         step->GetTrack()->GetTrackStatus() == fStopAndKill &&
         postStepPoint->GetStepStatus() == fGeomBoundary
     );
+    G4bool landedOnTargetSurface = (postStepPoint->GetPhysicalVolume()->GetName().find("WSiWire") != std::string::npos);
     G4bool depositedNonzeroNonIonizingEnergy = step->GetNonIonizingEnergyDeposit() > 0.;
     G4bool depositedNonzeroEnergy = step->GetTotalEnergyDeposit() > 0.;
 
     if (isPhonon) {
         G4cout<<"### Detected " << std::setprecision(8) << step->GetNonIonizingEnergyDeposit() * 1e6 << " eV hit by "<< particle->GetParticleName() << " @ " << particle <<" of energy " << track->GetKineticEnergy() * 1e6 << " eV, will it be recorded? "<< (deadAtBoundary && depositedNonzeroNonIonizingEnergy) <<G4endl;
         G4cout<<"### ### Stop and kill? " << (step->GetTrack()->GetTrackStatus() == fStopAndKill) << G4endl;
-        G4cout<<"### ### Geometry boundary? " << (postStepPoint->GetStepStatus() == fGeomBoundary) << G4endl;
+        G4cout<<"### ### Geometry boundary? " << landedOnTargetSurface << G4endl;
+        G4cout<<"### ### WSi surface? " << (postStepPoint->GetStepStatus() == fGeomBoundary) << G4endl;
         G4cout<<"### ### Nonzero energy? " << depositedNonzeroNonIonizingEnergy << G4endl;
     }else {
         G4cout<<"### Detected " << std::setprecision(8) << step->GetTotalEnergyDeposit() * 1e6 << " eV hit by "<< particle->GetParticleName() << " @ " << particle <<" of energy " << track->GetKineticEnergy() * 1e6 << " eV, will it be recorded? "<< (!isPhonon && depositedNonzeroEnergy) <<G4endl;
     }
     
-    if (!isPhonon) { return depositedNonzeroEnergy; }
-    else { return deadAtBoundary && depositedNonzeroNonIonizingEnergy; }
+    if (!isPhonon) { return depositedNonzeroEnergy && landedOnTargetSurface; }
+    else { return deadAtBoundary && depositedNonzeroNonIonizingEnergy && landedOnTargetSurface; }
 
 }
