@@ -113,8 +113,8 @@ MyG4Args::MyG4Args(int mainargc, char** mainargv) {
         }else if (strcmp(mainargv[j],"-timeCut")==0)
         {   
 
-            globalTimeCut = atof(mainargv[j+1]) * 1e-9; j=j+1;
-            G4cout<< " ### Stop tracking after "<< globalTimeCut * 1e9 << " ns" <<G4endl;   
+            globalTimeCut = atof(mainargv[j+1]); j=j+1;
+            G4cout<< " ### Stop tracking after "<< globalTimeCut << " ns" <<G4endl;   
                 
         }
     }

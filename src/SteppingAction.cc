@@ -47,9 +47,9 @@ void SteppingAction::UserSteppingAction( const G4Step* step )
   //First up: do generic exporting of step information (no cuts made here)
   //ExportStepInformation(step);
 
-  G4double globalTime = step->GetTrack()->GetGlobalTime()
-  if (PassArgs->GetTimeCut()) {
-    step->GetTrack()->SetTrackStatus(fStopAndKill)
+  G4double globalTime = step->GetTrack()->GetGlobalTime();
+  if (PassArgs->GetTimeCut(globalTime)) {
+    step->GetTrack()->SetTrackStatus(fStopAndKill);
   }
   
   return;

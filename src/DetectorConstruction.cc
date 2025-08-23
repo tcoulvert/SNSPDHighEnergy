@@ -227,25 +227,25 @@ void DetectorConstruction::SetupGeometry()
         1.0, 0.0, 0.0, 0.0 );
     fCuSiInterface = new G4CMPSurfaceProperty("SiCuInterface",
         1.0, 0.0, 0.0, 0.0,
-        0.99, 1.0, 0.0, 0.0 );
+        1.0, 1.0, 0.0, 0.0 );
     // Si substrate to SiO2 layer interface
     fSiSiO2Interface = new G4CMPSurfaceProperty("SiSiO2Interface",
         1.0, 0.0, 0.0, 0.0,
-        0.9, 0.5, 0.0, 0.0);
+        1.0, 0.5, 0.0, 0.0);
     fSiO2SiInterface = new G4CMPSurfaceProperty("SiSiO2Interface",
         1.0, 0.0, 0.0, 0.0,
-        0.8, 0.5, 0.0, 0.0);
+        1.0, 0.5, 0.0, 0.0);
     // SiO2 ubstrate to SiO2 top layer interface
     fSiO2SiO2Interface = new G4CMPSurfaceProperty("SiO2SiO2Interface",
         1.0, 0.0, 0.0, 0.0,
-        0.99, 0.5, 0.0, 0.0);
+        1.0, 0.5, 0.0, 0.0);
     // SiO2 layer to Amorphous Silicon (non-superconducting cap) interface
     fSiO2aSiInterface = new G4CMPSurfaceProperty("SiO2aSiInterface",
         1.0, 0.0, 0.0, 0.0,
-        0.7, 1.0, 0.0, 0.0 );
+        1.0, 1.0, 0.0, 0.0 );
     faSiSiO2Interface = new G4CMPSurfaceProperty("SiO2aSiInterface",
         1.0, 0.0, 0.0, 0.0,
-        0.9, 1.0, 0.0, 0.0 );
+        1.0, 1.0, 0.0, 0.0 );
     // SiO2 layer to Tungsten Silicide (superconducting wire) interface
     fSiO2WSiInterface = new G4CMPSurfaceProperty("SiO2WSiInterface",
         1.0, 0.0, 0.0, 0.0,
