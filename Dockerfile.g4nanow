@@ -1,0 +1,87 @@
+# FROM ubuntu:latest
+FROM ubuntu:20.04
+
+### SuperUser (SU) Home Directory ###
+WORKDIR /root
+
+### Install Linux Tools ###
+
+# Install Basic Tools #
+RUN apt-get --assume-yes update
+RUN apt-get --assume-yes install build-essential
+# RUN add-apt-repository --assume-yes universe
+RUN apt-get --assume-yes update
+RUN apt-get --assume-yes install wget
+RUN apt-get --assume-yes install gfortran
+RUN apt-get --assume-yes install curl
+RUN apt-get --assume-yes install vim
+RUN apt-get --assume-yes install less
+RUN DEBIAN_FRONTEND="noninteractive" TZ="America/New_York" \
+    apt-get --assume-yes install cmake
+RUN apt-get --assume-yes install rsync
+RUN apt-get --assume-yes install gnuplot
+RUN apt-get --assume-yes install ghostscript
+RUN apt-get --assume-yes install locate
+RUN apt-get --assume-yes install htop
+RUN apt-get --assume-yes install git
+
+# Install Python Packages #
+RUN apt-get --assume-yes install python3
+RUN apt-get --assume-yes install python3-pip
+RUN pip3 install six
+RUN apt-get --assume-yes install python2
+RUN curl https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py
+RUN python2 get-pip.py
+
+# Install MG5 NLO Dependencies #
+RUN apt-get --assume-yes install bc
+
+# Install ROOT Dependencies #
+RUN apt-get --assume-yes install libx11-dev
+RUN apt-get --assume-yes install libxpm-dev
+RUN apt-get --assume-yes install libxft-dev
+RUN apt-get --assume-yes install libxext-dev
+RUN apt-get --assume-yes install libssl-dev
+
+### Install ROOT ###
+
+# Install ROOT v6.24.08 #
+WORKDIR /usr/src
+RUN wget https://root.cern/download/root_v6.24.08.Linux-ubuntu20-x86_64-gcc9.4.tar.gz -O root_v6.24.08.tar.gz \
+    && tar -xzf root_v6.24.08.tar.gz
+
+
+### Install Geant4 10.7.4 ###
+WORKDIR /root
+RUN apt-get --assume-yes install freeglut3-dev qt5-default
+WORKDIR /usr/src
+RUN wget https://gitlab.cern.ch/geant4/geant4/-/archive/v10.7.4/geant4-v10.7.4.tar.gz -O geant4-v10.7.4.tar.gz \
+    && tar -xzf geant4-v10.7.4.tar.gz
+RUN mkdir geant4-v10.7.4-build && mkdir geant4-v10.7.4-install \
+    && cd geant4-v10.7.4-build && cmake -DGEANT4_INSTALL_DATA=ON -DGEANT4_USE_QT=ON \ 
+    -DCMAKE_CXX_STANDARD=14 -DCMAKE_INSTALL_PREFIX=../geant4-v10.7.4-install \ 
+    ../geant4-v10.7.4
+RUN cd geant4-v10.7.4-build && make install -j4
+
+### Install G4CMP ###
+RUN git clone -b feature/TrackedFilmResponse https://github.com/kelseymh/G4CMP.git
+RUN mkdir G4CMP-build && mkdir G4CMP-install \
+    && cd G4CMP-build && cmake -DGeant4_DIR=../geant4-v10.7.4-install/lib/Geant4-10.7.4 \
+    -DINSTALL_EXAMPLES=ON -DCMAKE_CXX_STANDARD=14 -DCMAKE_INSTALL_PREFIX=../G4CMP-install \
+    ../G4CMP
+RUN cd G4CMP-build && make install -j4
+
+### Install G4SNSPD ###
+RUN git clone https://github.com/tcoulvert/SNSPDHighEnergy.git
+RUN mkdir SNSPDHighEnergy-build && mkdir SNSPDHighEnergy-install
+# RUN mkdir SNSPDHighEnergy-build && SNSPDHighEnergy-install \
+#     && source geant4-v10.7.4-install/bin/geant4.sh && source G4CMP-install/share/G4CMP/g4cmp_env.sh \ 
+#     && SNSPDHighEnergy-build && cmake -DCMAKE_CXX_STANDARD=14 -DCMAKE_INSTALL_PREFIX=../SNSPDHighEnergy-install \
+#     ../SNSPDHighEnergy
+
+### Enter Mounted Directory ###
+WORKDIR /work
+
+### Run Bash ###
+
+CMD ["/bin/bash"]
