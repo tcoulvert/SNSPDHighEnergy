@@ -54,7 +54,7 @@ void defaultUIManagerSettings(G4UImanager* UImanager) {
   // Configure step point visualization
   UImanager->ApplyCommand("/tracking/verbose 2");
   UImanager->ApplyCommand("/tracking/storeTrajectory 1");
-  UImanager->ApplyCommand("/vis/scene/endOfEventAction accumulate");
+  UImanager->ApplyCommand("/vis/scene/endOfEventAction accumulate -1");
   UImanager->ApplyCommand("/vis/scene/add/trajectories");
 
   UImanager->ApplyCommand("/vis/modeling/trajectories/create/drawByParticleID");
@@ -97,9 +97,9 @@ int main(int argc, char** argv)
  FTFP_BERT* physics = new FTFP_BERT(0);
  physics->RegisterPhysics(new G4CMPPhysics);
 
-//  physics->RegisterPhysics(new G4OpticalPhysics);
 //  physics->RegisterPhysics(new G4RadioactiveDecayPhysics); // For radioactive decay
-//  physics->RegisterPhysics(new G4EmLivermorePhysics); // For low energy photons
+ physics->RegisterPhysics(new G4OpticalPhysics);
+ physics->RegisterPhysics(new G4EmLivermorePhysics); // For low energy photons
  G4StepLimiterPhysics* stepLimitPhys = new G4StepLimiterPhysics();
 //  stepLimitPhys->SetApplyToAll(true); // activates step limit for ALL particles
  physics->RegisterPhysics(stepLimitPhys);
@@ -117,52 +117,16 @@ int main(int argc, char** argv)
  {
 
   runManager->Initialize();
-  G4UIExecutive* ui = new G4UIExecutive(argc, argv);
 
   // Initialize the visualization manager
   G4VisManager *visManager = new G4VisExecutive();
   visManager->Initialize();
 
-  // Get the UI manager and apply visualization commands
-  G4UImanager *UImanager = G4UImanager::GetUIpointer();
-
-  defaultUIManagerSettings(UImanager);
-  
+  // Get the UI executive and open interactive session
+  G4UIExecutive* ui = new G4UIExecutive(argc, argv);
   ui->SessionStart();
 
-  // delete ui;
-  // delete visManager;
-  // delete UImanager;
-
- } else if (myG4Args->GetRunevt() > 0) 
- {
-
-  runManager->Initialize();
-
-  if (myG4Args->GetRunevt() == 1) 
-  {
-
-    G4UIExecutive* ui = new G4UIExecutive(argc, argv);
-
-    // Initialize the visualization manager
-    G4VisManager *visManager = new G4VisExecutive();
-    visManager->Initialize();
-
-    // Get the UI manager and apply visualization commands
-    G4UImanager *UImanager = G4UImanager::GetUIpointer();
-
-    defaultUIManagerSettings(UImanager);
-    
-    ui->SessionStart();
-
-  }
-
-  // Run the specified number of events
-  G4int numberOfEvents = myG4Args->GetRunevt();
-  G4cout << "### Running " << numberOfEvents << " events." << G4endl;
-  runManager->BeamOn(numberOfEvents);
-
- } else           // Batch mode
+ } else if (myG4Args->GetMacName() != "")  // Batch mode
  {
 
   // Initialize the visualization manager
@@ -173,11 +137,32 @@ int main(int argc, char** argv)
   G4UImanager *UImanager = G4UImanager::GetUIpointer();
 
   G4String command = "/control/execute ";
-  G4String fileName = argv[1];
-  UImanager->ApplyCommand(command+fileName);
+  UImanager->ApplyCommand(command + myG4Args->GetMacName());
 
   delete visManager;
   delete UImanager;
+
+ } else  // standard run mode
+ {
+
+  runManager->Initialize();
+
+  // Initialize the visualization manager
+  G4VisManager *visManager = new G4VisExecutive();
+  visManager->Initialize();
+
+  // Get the UI manager and apply default vis commands
+  G4UImanager *UImanager = G4UImanager::GetUIpointer();
+  defaultUIManagerSettings(UImanager);
+
+  // Run the specified number of events
+  G4int numberOfEvents = myG4Args->GetRunevt();
+  G4cout << "### Running " << numberOfEvents << " events." << G4endl;
+  runManager->BeamOn(numberOfEvents);
+
+  // Visualize the events
+  UImanager->ApplyCommand("/vis/enable");
+  UImanager->ApplyCommand("/vis/viewer/flush");
 
  }
 

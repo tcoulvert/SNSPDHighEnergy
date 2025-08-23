@@ -25,18 +25,24 @@ MyG4Args::MyG4Args(int mainargc, char** mainargv) {
             }
 
         }
-	    // Check for "-random" argument to activate random particle generator location
-		if (strcmp(mainargv[j], "-rndgun") == 0) {
+        // Check for "-batch" argument to activate batch mode of macro
+		if (strcmp(mainargv[j], "-batch") == 0) {
+
+			MacName = mainargv[j+1]; j=j+1;
+			G4cout << "### Batch mode turned on with file " << MacName << G4endl;
+        }
+        // Check for "-random" argument to activate random particle generator location
+        if (strcmp(mainargv[j], "-rndgun") == 0) {  
 
 			randomGunLocation = true;
 			G4cout << "### Random particle location activated." << G4endl;
 
-		}else if(strcmp(mainargv[j],"-runevt")==0)
+		}else if(strcmp(mainargv[j],"-runevt") == 0)
         {   
             runevt = atoi(mainargv[j+1]); j=j+1;
             G4cout<< " ### Run "<< runevt <<" evts" <<G4endl;     
                 
-        }else if(strcmp(mainargv[j],"-Allrecord")==0)
+        }else if(strcmp(mainargv[j],"-Allrecord") == 0)
         {   
             Allrecord = true;
             G4cout<< " ### Allrecord true, storing all impacts even in Edep==0 (needed for storing impact initial point)" <<G4endl;     

@@ -82,6 +82,9 @@ public:
 		return CurrentEvtEdep;
 	}
 
+    G4String GetMacName() {
+        return MacName;
+    }
     G4ThreeVector GetParticlePos() {
         return particlePos;
     }
@@ -102,8 +105,7 @@ public:
 private:
     // Member variables
     G4String OutName = "sim_output";
-    // G4String BasicOutName= "basic_output";
-    G4String MacName;    
+    G4String MacName;
     G4int runevt = 0;
     bool Allrecord = false;
 	bool randomGunLocation = false;  // Flag to determine if random location is activated

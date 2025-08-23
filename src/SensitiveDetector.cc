@@ -107,14 +107,17 @@ G4bool SensitiveDetector::IsHit(const G4Step* step,
     G4bool depositedNonzeroNonIonizingEnergy = step->GetNonIonizingEnergyDeposit() > 0.;
     G4bool depositedNonzeroEnergy = step->GetTotalEnergyDeposit() > 0.;
 
-    if (isPhonon) {
-        G4cout<<"### Detected " << std::setprecision(8) << step->GetNonIonizingEnergyDeposit() * 1e6 << " eV hit by "<< particle->GetParticleName() << " @ " << particle <<" of energy " << track->GetKineticEnergy() * 1e6 << " eV, will it be recorded? "<< (deadAtBoundary && depositedNonzeroNonIonizingEnergy) <<G4endl;
-        G4cout<<"### ### Stop and kill? " << (step->GetTrack()->GetTrackStatus() == fStopAndKill) << G4endl;
-        G4cout<<"### ### Geometry boundary? " << landedOnTargetSurface << G4endl;
-        G4cout<<"### ### WSi surface? " << (postStepPoint->GetStepStatus() == fGeomBoundary) << G4endl;
-        G4cout<<"### ### Nonzero energy? " << depositedNonzeroNonIonizingEnergy << G4endl;
-    }else {
-        G4cout<<"### Detected " << std::setprecision(8) << step->GetTotalEnergyDeposit() * 1e6 << " eV hit by "<< particle->GetParticleName() << " @ " << particle <<" of energy " << track->GetKineticEnergy() * 1e6 << " eV, will it be recorded? "<< (!isPhonon && depositedNonzeroEnergy) <<G4endl;
+    if (getenv("G4CMP_DEBUG") != nullptr && atoi(getenv("G4CMP_DEBUG")) > 0)
+    {
+        if (isPhonon) {
+            G4cout<<"### Detected " << std::setprecision(8) << step->GetNonIonizingEnergyDeposit() * 1e6 << " eV hit by "<< particle->GetParticleName() << " @ " << particle <<" of energy " << track->GetKineticEnergy() * 1e6 << " eV, will it be recorded? "<< (deadAtBoundary && depositedNonzeroNonIonizingEnergy) <<G4endl;
+            G4cout<<"### ### Stop and kill? " << (step->GetTrack()->GetTrackStatus() == fStopAndKill) << G4endl;
+            G4cout<<"### ### Geometry boundary? " << landedOnTargetSurface << G4endl;
+            G4cout<<"### ### WSi surface? " << (postStepPoint->GetStepStatus() == fGeomBoundary) << G4endl;
+            G4cout<<"### ### Nonzero energy? " << depositedNonzeroNonIonizingEnergy << G4endl;
+        }else {
+            G4cout<<"### Detected " << std::setprecision(8) << step->GetTotalEnergyDeposit() * 1e6 << " eV hit by "<< particle->GetParticleName() << " @ " << particle <<" of energy " << track->GetKineticEnergy() * 1e6 << " eV, will it be recorded? "<< (!isPhonon && depositedNonzeroEnergy) <<G4endl;
+        }
     }
     
     if (!isPhonon) { return depositedNonzeroEnergy && landedOnTargetSurface; }

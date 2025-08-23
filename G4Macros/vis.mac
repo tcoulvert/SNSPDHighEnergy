@@ -11,7 +11,7 @@
 # (if too many tracks cause core dump => storeTrajectory 0)
 /tracking/verbose 2
 /tracking/storeTrajectory 1
-/vis/scene/endOfEventAction accumulate 1
+/vis/scene/endOfEventAction accumulate -1
 /vis/scene/add/trajectories
 
 # Make phonon polarization modes distinguishable

@@ -61,12 +61,15 @@ private:
 
   // Substrate to copper housing interface
   G4CMPSurfaceProperty* fSiCuInterface;
+  G4CMPSurfaceProperty* fCuSiInterface;
   // Si Substrate to SiO2 substrate interface
   G4CMPSurfaceProperty* fSiSiO2Interface;
+  G4CMPSurfaceProperty* fSiO2SiInterface;
   // SiO2 Substrate to SiO2 top layer interface
   G4CMPSurfaceProperty* fSiO2SiO2Interface;
   // SiO2 layer to Amorphous Silicon (non-superconducting cap) interface
   G4CMPSurfaceProperty* fSiO2aSiInterface;
+  G4CMPSurfaceProperty* faSiSiO2Interface;
   // SiO2 layer to Tungsten Silicide (superconducting wire) interface    
   G4CMPSurfaceProperty* fSiO2WSiInterface;
   // aSi layer to WSi (interface between superconducting wire and non-superconducting gaps) interface   
