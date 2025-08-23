@@ -1,7 +1,7 @@
 /run/initialize
 
 # Scene handler
-/vis/open OGL
+/vis/open OGLIQt
 /vis/viewer/set/upVector 0 1 0
 /vis/viewer/set/viewpointVector 0 0 1
 /vis/viewer/zoom 1.4
@@ -11,7 +11,7 @@
 # (if too many tracks cause core dump => storeTrajectory 0)
 /tracking/verbose 2
 /tracking/storeTrajectory 1
-/vis/scene/endOfEventAction accumulate -1
+/vis/scene/endOfEventAction accumulate
 /vis/scene/add/trajectories
 
 # Make phonon polarization modes distinguishable
@@ -34,7 +34,3 @@
 /vis/viewer/set/viewpointThetaPhi 30 150 #90 180
 /vis/viewer/pan 5.0 0 mm
 /vis/viewer/zoom 1
-
-/g4cmp/producePhonons 0.01
-/g4cmp/sampleLuke 0.1
-/g4cmp/produceCharges 0.1

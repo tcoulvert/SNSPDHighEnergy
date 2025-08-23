@@ -3,7 +3,7 @@
 # Create a scene handler for a specific graphics system
 # (Edit the next line(s) to choose another graphic system)
 #
-/vis/open OGL
+/vis/open Qt
 /vis/viewer/set/upVector 0 1 0
 /vis/viewer/set/viewpointVector 0 0 1
 /vis/viewer/zoom 1.4
@@ -25,7 +25,6 @@
 #Rendering options
 /vis/viewer/set/style wireframe #surface
 /vis/viewer/set/hiddenMarker true
-#/vis/viewer/set/viewpointThetaPhi 30 150 #Nice for orthographic view
 /vis/viewer/set/viewpointThetaPhi 0 90
 /vis/viewer/zoom 1.6
 
@@ -34,10 +33,4 @@
 #/process/inactivate phononDownconversion # ditto
 
 # Particle generation
-/gun/number 1000
-/gun/particle phononL
-#/gun/position 0 0 -1.5252415 mm
-/gun/position 0 0 100 mm
-/gun/momentumAmp 0.03 eV
-/gun/direction 0 0 1
-/run/beamOn 1
+/run/beamOn 100

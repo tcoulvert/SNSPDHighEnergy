@@ -39,44 +39,6 @@
 using namespace DetectorParameters;
 
 
-void defaultUIManagerSettings(G4UImanager* UImanager) {
-
-  // Open the visualization and set up the scene
-  UImanager->ApplyCommand("/vis/open OGL");
-  UImanager->ApplyCommand("/vis/viewer/set/viewpointVector 0 0 1");
-  UImanager->ApplyCommand("/vis/viewer/zoom 1.4");
-  UImanager->ApplyCommand("/vis/drawVolume");
-  UImanager->ApplyCommand("/vis/viewer/set/autoRefresh true");
-  // UImanager->ApplyCommand("/vis/scene/add/trajectories smooth");
-  // UImanager->ApplyCommand("/vis/scene/endOfEventAction accumulate");
-  // UImanager->ApplyCommand("/vis/scene/add/axes");
-
-  // Configure step point visualization
-  UImanager->ApplyCommand("/tracking/verbose 2");
-  UImanager->ApplyCommand("/tracking/storeTrajectory 1");
-  UImanager->ApplyCommand("/vis/scene/endOfEventAction accumulate -1");
-  UImanager->ApplyCommand("/vis/scene/add/trajectories");
-
-  UImanager->ApplyCommand("/vis/modeling/trajectories/create/drawByParticleID");
-  UImanager->ApplyCommand("/vis/modeling/trajectories/drawByParticleID-0/set proton White");
-  UImanager->ApplyCommand("/vis/modeling/trajectories/drawByParticleID-0/set e- Yellow");
-  UImanager->ApplyCommand("/vis/modeling/trajectories/drawByParticleID/set G4CMPDriftElectron Violet");
-  UImanager->ApplyCommand("/vis/modeling/trajectories/drawByParticleID/set G4CMPDriftHole Orange");
-  UImanager->ApplyCommand("/vis/modeling/trajectories/drawByParticleID/set phononTS Red");
-  UImanager->ApplyCommand("/vis/modeling/trajectories/drawByParticleID/set phononTF Green");
-  UImanager->ApplyCommand("/vis/modeling/trajectories/drawByParticleID/set phononL Blue");
-
-  UImanager->ApplyCommand("/vis/viewer/set/style wireframe");
-  UImanager->ApplyCommand("/vis/viewer/set/hiddenMarker true");
-  UImanager->ApplyCommand("/vis/viewer/set/viewpointThetaPhi 0 90");
-  UImanager->ApplyCommand("/vis/viewer/zoom 1.6");
-
-  UImanager->ApplyCommand("/g4cmp/producePhonons 1");
-  UImanager->ApplyCommand("/g4cmp/sampleLuke 1");
-  UImanager->ApplyCommand("/g4cmp/produceCharges 0.00001");
-
-}
-
 int main(int argc, char** argv)
 {
   MyG4Args* myG4Args = new MyG4Args(argc, argv);
@@ -113,59 +75,42 @@ int main(int argc, char** argv)
  //
  runManager->SetUserInitialization(new ActionInitialization(myG4Args));
 
- if (argc==1)   // Define UI session for interactive mode
+ // Initialize the visualization manager
+ G4VisManager *visManager = new G4VisExecutive();
+ visManager->Initialize();
+
+ // Get the UI manager and apply visualization commands
+ G4UImanager *UImanager = G4UImanager::GetUIpointer();
+
+ // Initialize the runManager
+ runManager->Initialize();
+
+ if (argc==1 || (myG4Args->GetRunevt() == 0))   // interactive mode
  {
-
-  runManager->Initialize();
-
-  // Initialize the visualization manager
-  G4VisManager *visManager = new G4VisExecutive();
-  visManager->Initialize();
 
   // Get the UI executive and open interactive session
   G4UIExecutive* ui = new G4UIExecutive(argc, argv);
   ui->SessionStart();
+  delete ui;
 
  } else if (myG4Args->GetMacName() != "")  // Batch mode
  {
 
-  // Initialize the visualization manager
-  G4VisManager *visManager = new G4VisExecutive();
-  visManager->Initialize();
-
-  // Get the UI manager and apply visualization commands
-  G4UImanager *UImanager = G4UImanager::GetUIpointer();
-
   G4String command = "/control/execute ";
   UImanager->ApplyCommand(command + myG4Args->GetMacName());
 
-  delete visManager;
-  delete UImanager;
-
- } else  // standard run mode
+ } else  // simple run mode
  {
-
-  runManager->Initialize();
-
-  // Initialize the visualization manager
-  G4VisManager *visManager = new G4VisExecutive();
-  visManager->Initialize();
-
-  // Get the UI manager and apply default vis commands
-  G4UImanager *UImanager = G4UImanager::GetUIpointer();
-  defaultUIManagerSettings(UImanager);
 
   // Run the specified number of events
   G4int numberOfEvents = myG4Args->GetRunevt();
   G4cout << "### Running " << numberOfEvents << " events." << G4endl;
   runManager->BeamOn(numberOfEvents);
 
-  // Visualize the events
-  UImanager->ApplyCommand("/vis/enable");
-  UImanager->ApplyCommand("/vis/viewer/flush");
-
  }
 
+ delete visManager;
+ delete UImanager;
  delete runManager;
 
  return 0;
