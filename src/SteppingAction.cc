@@ -47,12 +47,10 @@ void SteppingAction::UserSteppingAction( const G4Step* step )
   //First up: do generic exporting of step information (no cuts made here)
   //ExportStepInformation(step);
 
-  // G4VSensitiveDetector* fSensitive = step->GetPostStepPoint()->GetSensitiveDetector();
-  // G4cout << "located fSensitive @" << fSensitive << G4endl;
-  // if (fSensitive) {
-  //   G4cout << "located post-step hit" << G4endl;
-  //   fSensitive->Hit(step);
-  // }
+  G4double globalTime = step->GetTrack()->GetGlobalTime()
+  if (PassArgs->GetTimeCut()) {
+    step->GetTrack()->SetTrackStatus(fStopAndKill)
+  }
   
   return;
 }

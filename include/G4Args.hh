@@ -100,6 +100,9 @@ public:
     G4int GetNParticles() {
         return nParticles;
     }
+    G4bool GetTimeCut(G4double time) {
+        return globalTimeCut > 0 && globalTimeCut < time;
+    }
 
     
 private:
@@ -115,6 +118,7 @@ private:
     G4ThreeVector particleMomDir = G4ThreeVector(0, 0, 1);  // Default is +z direction
     G4String particleName = "proton";
     G4int nParticles = 1;  // Number of particles per event to generate
+    G4double globalTimeCut = -1;  // ns
 	//G4double CurrentEvtEdep = 0;
 	
     std::vector<G4ThreeVector> gunpositions; // Vector to store position data
