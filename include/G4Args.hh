@@ -107,7 +107,7 @@ public:
     
 private:
     // Member variables
-    G4String OutName = "sim_output";
+    G4String OutName = "sim_output_aWSi_0p9_aCu_0p1";
     G4String MacName;
     G4int runevt = 0;
     bool Allrecord = false;
@@ -145,5 +145,8 @@ private:
     G4ThreeVector ConvertToPos(std::vector<double> particlexyz) {
         return G4ThreeVector(particlexyz[0], particlexyz[1], particlexyz[2]);
     }
+    // Void makeOutputName() {
+
+    // }
 };
 #endif

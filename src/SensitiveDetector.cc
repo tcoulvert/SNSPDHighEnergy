@@ -45,18 +45,23 @@ G4bool SensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *ROhist)
     // Only process hits where energy deposition is greater than 0
     if (IsHit(aStep, ROhist)) {
 
-        G4double edep = GetEnergyDep(aStep);
+        G4double edep = GetEnergyDep(aStep) / eV;
         
         // Get position of the hit
         G4ThreeVector position = aStep->GetPostStepPoint()->GetPosition();
         
         // Get the time of the hit (time at the post step point)
-        G4double time = aStep->GetPostStepPoint()->GetGlobalTime();
+        G4double time = aStep->GetPostStepPoint()->GetGlobalTime() / ns;
         
         // Get particle type (the track associated with the step)
         G4Track *track = aStep->GetTrack();
         G4ParticleDefinition *particle = track->GetDefinition();
         G4String particleType = particle->GetParticleName();
+
+        // G4cout << particleType << G4endl;
+        // G4cout << "edep = " << edep / eV << " eV" << G4endl;
+        // G4cout << "time = " << time / ns << " ns" << G4endl;
+        // G4cout << "-----------------------------" << G4endl;
         
         
         // Store the hit data

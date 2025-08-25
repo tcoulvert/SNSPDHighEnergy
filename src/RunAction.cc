@@ -99,9 +99,9 @@ void RunAction::EndOfRunAction(const G4Run* run)
         const auto& hit = hitRecords[i];
         
             man->FillNtupleDColumn(0, 0, hit.energyDeposit);  // Energy deposit
-            man->FillNtupleDColumn(0, 1, hit.position.x());   // Position X
-            man->FillNtupleDColumn(0, 2, hit.position.y());   // Position Y
-            man->FillNtupleDColumn(0, 3, hit.position.z());   // Position Z
+            man->FillNtupleDColumn(0, 1, hit.position.x() / um);   // Position X
+            man->FillNtupleDColumn(0, 2, hit.position.y() / um);   // Position Y
+            man->FillNtupleDColumn(0, 3, hit.position.z() / um);   // Position Z
             man->FillNtupleDColumn(0, 4, hit.time);           // Time
             man->FillNtupleSColumn(0, 5, hit.particleType);   // Particle type
                
@@ -113,9 +113,9 @@ void RunAction::EndOfRunAction(const G4Run* run)
         const auto& hit = hitRecords[i];
         
             man->FillNtupleDColumn(0, 0, hit.energyDeposit);  // Energy deposit
-            man->FillNtupleDColumn(0, 1, hit.position.x());   // Position X
-            man->FillNtupleDColumn(0, 2, hit.position.y());   // Position Y
-            man->FillNtupleDColumn(0, 3, hit.position.z());   // Position Z
+            man->FillNtupleDColumn(0, 1, hit.position.x() / um);   // Position X
+            man->FillNtupleDColumn(0, 2, hit.position.y() / um);   // Position Y
+            man->FillNtupleDColumn(0, 3, hit.position.z() / um);   // Position Z
             man->FillNtupleDColumn(0, 4, hit.time);           // Time
             man->FillNtupleSColumn(0, 5, hit.particleType);   // Particle type
             
@@ -173,7 +173,7 @@ void RunAction::EndOfRunAction(const G4Run* run)
 			// Iterate through the energy data for each particle type in this event
 			for (const auto& energyEntry : energyByParticle) {
 				G4cout << "  Particle type: " << energyEntry.first << ", "
-					   << "Total energy deposited: " << std::setprecision(8) << energyEntry.second / eV << " eV" << G4endl;
+					   << "Total energy deposited: " << std::setprecision(8) << energyEntry.second << " eV" << G4endl;
 			// Print event number and gun position
 			G4cout << "  Impact location (mm): X = " << GunX
 				   << ", Y = " << GunY

@@ -131,6 +131,7 @@ MyG4Args::MyG4Args(int mainargc, char** mainargv) {
                 
         }
     }
+    // makeOutputName();
 
     if (randomGunLocation && posResScan) {
         G4cerr << "### Error: both 'rndgun' and 'PosResScan' were activated, however both can't be run." << G4endl;
