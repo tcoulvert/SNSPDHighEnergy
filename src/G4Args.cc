@@ -31,8 +31,21 @@ MyG4Args::MyG4Args(int mainargc, char** mainargv) {
 			MacName = mainargv[j+1]; j=j+1;
 			G4cout << "### Batch mode turned on with file " << MacName << G4endl;
         }
-        // Check for "-random" argument to activate random particle generator location
+        // Check for "-rndgun" argument to activate random particle generator location
         if (strcmp(mainargv[j], "-rndgun") == 0) {  
+
+            // std::string particleArg = mainargv[j+1]; j=j+1;
+            // std::regex pattern(",");
+            // size_t pos = 0;
+            // std::string token;
+            // while ((pos = particleArg.find(",")) != std::string::npos) {
+            //     token = particleArg.substr(0, pos);
+            //     particlexyz.push_back(atof(token.c_str()));
+            //     particleArg.erase(0, pos + 1);
+            // }
+            // particlexyz.push_back(atof(particleArg.c_str()));
+
+            // particleMomDir = ConvertToPos(particlexyz);
 
 			randomGunLocation = true;
 			G4cout << "### Random particle location activated." << G4endl;

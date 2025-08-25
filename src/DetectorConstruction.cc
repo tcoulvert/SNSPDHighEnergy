@@ -222,13 +222,13 @@ void DetectorConstruction::SetupGeometry()
   //below, and invoke these surface definitions.
   if( !fConstructed ){
     // Substrate to copper housing interface
-    //   -> 
+    //   -> https://arxiv.org/pdf/2404.04423
     fSiCuInterface = new G4CMPSurfaceProperty("SiCuInterface",
         1.0, 0.0, 0.0, 0.0,
-        1.0, 0.0, 0.0, 0.0 );
+        0.1, 0.0, 0.0, 0.0 );
     fCuSiInterface = new G4CMPSurfaceProperty("SiCuInterface",
         1.0, 0.0, 0.0, 0.0,
-        1.0, 1.0, 0.0, 0.0 );
+        0.1, 1.0, 0.0, 0.0 );
     // Si substrate to SiO2 layer interface
     //   -> https://link.aps.org/accepted/10.1103/PhysRevB.97.195308
     //   -> https://qtts.engr.wisc.edu/wp-content/uploads/sites/1194/2020/08/RamayyaJAP104.pdf
@@ -255,7 +255,7 @@ void DetectorConstruction::SetupGeometry()
     //   -> 
     fSiO2WSiInterface = new G4CMPSurfaceProperty("SiO2WSiInterface",
         1.0, 0.0, 0.0, 0.0,
-        0.1, 1.0, 0.0, 0.0 );
+        1.0, 1.0, 0.0, 0.0 );
     // aSi layer to WSi (interface between superconducting wire and non-superconducting cap) interface
     //   -> 
     faSiWSiInterface = new G4CMPSurfaceProperty("aSiWSiInterface",
@@ -267,18 +267,31 @@ void DetectorConstruction::SetupGeometry()
         0.0, 1.0, 0.0, 0.0 );
 
 
+    // Substrate to copper housing interface
     fSiCuInterface->AddScatteringProperties(anhCutoff, reflCutoff, anhCoeffs,
         diffCoeffs, specCoeffs, GHz, GHz, GHz);
+    fCuSiInterface->AddScatteringProperties(anhCutoff, reflCutoff, anhCoeffs,
+        diffCoeffs, specCoeffs, GHz, GHz, GHz);
+    // Si substrate to SiO2 layer interface
     fSiSiO2Interface->AddScatteringProperties(anhCutoff, reflCutoff, anhCoeffs,
         diffCoeffs, specCoeffs, GHz, GHz, GHz);
+    fSiO2SiInterface->AddScatteringProperties(anhCutoff, reflCutoff, anhCoeffs,
+        diffCoeffs, specCoeffs, GHz, GHz, GHz);
+    // SiO2 substrate to SiO2 top layer interface
     fSiO2SiO2Interface->AddScatteringProperties(anhCutoff, reflCutoff, anhCoeffs,
         diffCoeffs, specCoeffs, GHz, GHz, GHz);
+    // SiO2 layer to Amorphous Silicon (non-superconducting cap) interface
     fSiO2aSiInterface->AddScatteringProperties(anhCutoff, reflCutoff, anhCoeffs,
         diffCoeffs, specCoeffs, GHz, GHz, GHz);
+    faSiSiO2Interface->AddScatteringProperties(anhCutoff, reflCutoff, anhCoeffs,
+        diffCoeffs, specCoeffs, GHz, GHz, GHz);
+    // SiO2 layer to Tungsten Silicide (superconducting wire) interface
     fSiO2WSiInterface->AddScatteringProperties(anhCutoff, reflCutoff, anhCoeffs,
         diffCoeffs, specCoeffs, GHz, GHz, GHz);
+    // aSi layer to WSi (interface between superconducting wire and non-superconducting cap) interface
     faSiWSiInterface->AddScatteringProperties(anhCutoff, reflCutoff, anhCoeffs,
-        diffCoeffs, specCoeffs, GHz, GHz, GHz);  
+        diffCoeffs, specCoeffs, GHz, GHz, GHz);
+    // SiO2 layer to vacuum interface
     fSiO2VacuumInterface->AddScatteringProperties(anhCutoff, reflCutoff, anhCoeffs,
         diffCoeffs, specCoeffs, GHz, GHz, GHz);
 
@@ -417,12 +430,12 @@ void DetectorConstruction::SetupGeometry()
 
   //-------------------------------------------------------------------------------------------------------------------
   //Then, set up the Si substrate.
-  G4Box* solid_Sisubstrate = new G4Box("solid_Sisubstrate", dp_SisubstrateDimX/2, dp_SisubstrateDimY/2, dp_SisubstrateDimZ/2);
+  G4Box* solid_Sisubstrate = new G4Box("solid_Sisubstrate", dp_SisubstrateDimX/2, dp_SisubstrateDimY/2, (dp_SisubstrateDimZ+dp_SiO2substrateDimZ+dp_SiO2toplayerDimZ)/2);
   G4LogicalVolume* logic_Sisubstrate = new G4LogicalVolume(solid_Sisubstrate, fSi, "logic_Sisubstrate");
 	logic_Sisubstrate->SetUserLimits(substrateUserLimits);
 	G4VPhysicalVolume* phys_Sisubstrate = new G4PVPlacement(
 		0,
-		G4ThreeVector(0., 0., dp_sensorDimZ-dp_SisubstrateDimZ/2),
+		G4ThreeVector(0., 0., dp_sensorDimZ-(dp_SisubstrateDimZ+dp_SiO2substrateDimZ+dp_SiO2toplayerDimZ)/2),
 		logic_Sisubstrate,
 		"phys_Sisubstrate",
 		logicWorld,
@@ -447,98 +460,7 @@ void DetectorConstruction::SetupGeometry()
   //Set up border surfaces
   G4CMPLogicalBorderSurface* border_Si_Cu = new G4CMPLogicalBorderSurface("border_Si_Cu", phys_Sisubstrate, physCu2, fSiCuInterface);
   G4CMPLogicalBorderSurface* border_Cu_Si = new G4CMPLogicalBorderSurface("border_Cu_Si", physCu2, phys_Sisubstrate, fCuSiInterface);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  //-------------------------------------------------------------------------------------------------------------------
-  //Next, setup the SiO2 substrate
-  G4Box* solid_SiO2substrate = new G4Box("solid_SiO2substrate", dp_SiO2substrateDimX/2, dp_SiO2substrateDimY/2, dp_SiO2substrateDimZ/2);
-  G4LogicalVolume* logic_SiO2substrate = new G4LogicalVolume(solid_SiO2substrate, fSiO2, "logic_SiO2substrate");
-	logic_SiO2substrate->SetUserLimits(substrateUserLimits);
-	G4VPhysicalVolume* phys_SiO2substrate = new G4PVPlacement(
-		0,
-		G4ThreeVector(0., 0., dp_sensorDimZ-dp_SisubstrateDimZ-dp_SiO2substrateDimZ/2),
-		logic_SiO2substrate,
-		"phys_SiO2substrate",
-		logicWorld,
-		false,
-		0,
-		true
-	);
-  
-  // G4LatticeLogical* logic_SiO2Lattice = LM->LoadLattice(fSiO2, "SiO2");
-  G4LatticeLogical* logic_SiO2Lattice = LM->LoadLattice(fSiO2, "Si");
-  G4LatticePhysical* phys_SiO2substrateLattice = new G4LatticePhysical(logic_SiO2Lattice);
-  phys_SiO2substrateLattice->SetMillerOrientation(1,0,0); 
-  LM->RegisterLattice(phys_SiO2substrate, phys_SiO2substrateLattice);
-
-  G4VisAttributes* SiO2substrateVisAtt= new G4VisAttributes(G4Colour(0.6,0.6,0.6));
-  SiO2substrateVisAtt->SetVisibility(true);
-  logic_SiO2substrate->SetVisAttributes(SiO2substrateVisAtt);
-
-  //Set up border surfaces
-  G4CMPLogicalBorderSurface* border_Si_SiO2 = new G4CMPLogicalBorderSurface("border_Si_SiO2", phys_Sisubstrate, phys_SiO2substrate, fSiSiO2Interface);
-  G4CMPLogicalBorderSurface* border_SiO2_Si = new G4CMPLogicalBorderSurface("border_SiO2_Si", phys_SiO2substrate, phys_Sisubstrate, fSiO2SiInterface);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//-------------------------------------------------------------------------------------------------------------------
-  //Finally, setup the SiO2 top layer
-  G4Box* solid_SiO2toplayer = new G4Box("solid_SiO2toplayer", dp_SiO2toplayerDimX/2, dp_SiO2toplayerDimY/2, dp_SiO2toplayerDimZ/2);
-  G4LogicalVolume* logic_SiO2toplayer = new G4LogicalVolume(solid_SiO2toplayer, fSiO2, "logic_SiO2toplayer");
-	logic_SiO2toplayer->SetUserLimits(substrateUserLimits);
-	G4VPhysicalVolume* phys_SiO2toplayer = new G4PVPlacement(
-		0,
-		G4ThreeVector(0., 0., dp_sensorDimZ-dp_SisubstrateDimZ-dp_SiO2substrateDimZ-dp_SiO2toplayerDimZ/2),
-		logic_SiO2toplayer,
-		"phys_SiO2toplayer",
-		logicWorld,
-		false,
-		0,
-		true
-	);
-
-  G4LatticePhysical* phys_SiO2toplayerLattice = new G4LatticePhysical(logic_SiO2Lattice);
-  phys_SiO2toplayerLattice->SetMillerOrientation(1,0,0);
-  LM->RegisterLattice(phys_SiO2toplayer, phys_SiO2toplayerLattice);
-
-  G4VisAttributes* SiO2toplayerVisAtt= new G4VisAttributes(G4Colour(0.8,0.8,0.8));
-  SiO2toplayerVisAtt->SetVisibility(true);
-  logic_SiO2toplayer->SetVisAttributes(SiO2toplayerVisAtt);
-
-  //Set up border surfaces
-  G4CMPLogicalBorderSurface* border_SiO2s_SiO2t = new G4CMPLogicalBorderSurface("border_SiO2s_SiO2t", phys_SiO2substrate, phys_SiO2toplayer, fSiO2SiO2Interface);
-  G4CMPLogicalBorderSurface* border_SiO2t_SiO2s = new G4CMPLogicalBorderSurface("border_SiO2t_SiO2s", phys_SiO2toplayer, phys_SiO2substrate, fSiO2SiO2Interface);
-  G4CMPLogicalBorderSurface* border_SiO2_vacuum = new G4CMPLogicalBorderSurface("border_SiO2t_vacuum", phys_SiO2toplayer, fWorldPhys, fSiO2VacuumInterface);
-
+  G4CMPLogicalBorderSurface* border_SiO2_vacuum = new G4CMPLogicalBorderSurface("border_SiO2t_vacuum", phys_Sisubstrate, fWorldPhys, fSiO2VacuumInterface);
 
 
 
@@ -558,7 +480,6 @@ void DetectorConstruction::SetupGeometry()
   //Finally, setup the nanowire strips and establish a sensitivity object
 
   G4MultiUnion* solid_WSiWire = new G4MultiUnion("solid_WSiWire");
-  G4MultiUnion* solid_aSiWire = new G4MultiUnion("solid_aSiWire");
 	
 	for (G4int i = 0; i < dp_numStrips; i++) {
 		// Position along y for each strip, considering the thickness and the spacing
@@ -589,58 +510,32 @@ void DetectorConstruction::SetupGeometry()
 
 		// Create a strip solid with specified dimensions
 		G4Box* solid_WSiStrip = new G4Box("solid_strip_" + std::to_string(i), dp_stripDimX / 2, dp_stripThickness / 2, dp_stripDimZ / 2);
-    G4Transform3D tr_WSiStrip = G4Transform3D(G4RotationMatrix(0, 0, 0), G4ThreeVector(0, strip_y_pos, +dp_SiO2toplayerDimZ/2 - dp_stripDimZ/2));
+    G4Transform3D tr_WSiStrip = G4Transform3D(G4RotationMatrix(0, 0, 0), G4ThreeVector(0, strip_y_pos, -(dp_SisubstrateDimZ+dp_SiO2substrateDimZ-dp_SiO2toplayerDimZ)/2-dp_stripDimZ/2));
     solid_WSiWire->AddNode(*solid_WSiStrip, tr_WSiStrip);
-
-		G4Box* solid_aSiStrip = new G4Box("solid_strip_" + std::to_string(i), dp_stripDimX / 2, dp_stripThickness / 2, dp_stripDimZ / 2);
-    G4Transform3D tr_aSiStrip = G4Transform3D(G4RotationMatrix(0, 0, 0), G4ThreeVector(0, strip_y_pos, +dp_SiO2toplayerDimZ/2 - dp_stripDimZ - dp_stripDimZ/2));
-    solid_aSiWire->AddNode(*solid_aSiStrip, tr_aSiStrip);
 
     if (!last_wire){
       G4Tubs* solid_WSiWrap = new G4Tubs("solid_strip_" + std::to_string(i), dp_stripWrapInnerRadius, dp_stripWrapOuterRadius, dp_stripDimZ / 2, startAngle, endAngle);
-      G4Transform3D tr_WSiWrap = G4Transform3D(G4RotationMatrix(xRot, yRot, zRot), G4ThreeVector(wrapPosX, wrap_y_pos, +dp_SiO2toplayerDimZ/2 - dp_stripDimZ/2));
+      G4Transform3D tr_WSiWrap = G4Transform3D(G4RotationMatrix(xRot, yRot, zRot), G4ThreeVector(wrapPosX, wrap_y_pos, -(dp_SisubstrateDimZ+dp_SiO2substrateDimZ-dp_SiO2toplayerDimZ)/2-dp_stripDimZ/2));
       solid_WSiWire->AddNode(*solid_WSiWrap, tr_WSiWrap);
-
-      G4Tubs* solid_aSiWrap = new G4Tubs("solid_strip_" + std::to_string(i), dp_stripWrapInnerRadius, dp_stripWrapOuterRadius, dp_stripDimZ / 2, startAngle, endAngle);
-      G4Transform3D tr_aSiWrap = G4Transform3D(G4RotationMatrix(xRot, yRot, zRot), G4ThreeVector(wrapPosX, wrap_y_pos, +dp_SiO2toplayerDimZ/2 - dp_stripDimZ - dp_stripDimZ/2));
-      solid_aSiWire->AddNode(*solid_aSiWrap, tr_aSiWrap);
 	  }
   }
 
   solid_WSiWire->Voxelize();
-  solid_aSiWire->Voxelize();
 
   G4LogicalVolume* logic_WSiWire = new G4LogicalVolume(solid_WSiWire, fWSi, "logic_WSiWire");
-  G4LogicalVolume* logic_aSiWire = new G4LogicalVolume(solid_aSiWire, faSi, "logic_aSiWire");
 
   logic_WSiWire->SetUserLimits(wireUserLimits);
-  logic_aSiWire->SetUserLimits(wireUserLimits);
 
   G4VisAttributes* WSiVisAtt= new G4VisAttributes(G4Colour(0.0,1.0,1.0,0.5));
   WSiVisAtt->SetVisibility(true);
   logic_WSiWire->SetVisAttributes(WSiVisAtt);
-
-  G4VisAttributes* aSiVisAtt= new G4VisAttributes(G4Colour(1.0,0.0,1.0,0.3));
-  aSiVisAtt->SetVisibility(true);
-  logic_aSiWire->SetVisAttributes(aSiVisAtt);
 
   G4VPhysicalVolume* phys_WSiWire = new G4PVPlacement(
 		0,
 		G4ThreeVector(0., 0., 0.),
 		logic_WSiWire,
 		"phys_WSiWire",
-		logic_SiO2toplayer,
-		false,
-		0,
-		true
-	);
-
-  G4VPhysicalVolume* phys_aSiWire = new G4PVPlacement(
-		0,
-		G4ThreeVector(0., 0., 0.),
-		logic_aSiWire,
-		"phys_aSiWire",
-		logic_SiO2toplayer,
+		logic_Sisubstrate,
 		false,
 		0,
 		true
@@ -652,19 +547,8 @@ void DetectorConstruction::SetupGeometry()
   phys_WSiLattice->SetMillerOrientation(1,0,0);
   LM->RegisterLattice(phys_WSiWire, phys_WSiLattice);
 
-  // G4LatticeLogical* logic_aSiLattice = LM->LoadLattice(faSi, "aSi");
-  G4LatticeLogical* logic_aSiLattice = LM->LoadLattice(faSi, "Si");
-  G4LatticePhysical* phys_aSiLattice = new G4LatticePhysical(logic_aSiLattice);
-  phys_aSiLattice->SetMillerOrientation(1,0,0);
-  LM->RegisterLattice(phys_aSiWire, phys_aSiLattice);
-
   //Set up border surfaces
-  G4CMPLogicalBorderSurface* border_SiO2_aSiWire = new G4CMPLogicalBorderSurface("border_SiO2_aSiStrip", phys_SiO2toplayer, phys_aSiWire, fSiO2aSiInterface);
-  G4CMPLogicalBorderSurface* border_aSiWire_SiO2 = new G4CMPLogicalBorderSurface("border_aSiStrip_SiO2", phys_aSiWire, phys_SiO2toplayer, faSiSiO2Interface);
-
-  G4CMPLogicalBorderSurface* border_aSiWire_WSiWire = new G4CMPLogicalBorderSurface("border_aSiStrip_WSiStrip", phys_aSiWire, phys_WSiWire, faSiWSiInterface);
-  G4CMPLogicalBorderSurface* border_SiO2_WSiWire = new G4CMPLogicalBorderSurface("border_SiO2_WSiStrip", phys_SiO2toplayer, phys_WSiWire, fSiO2WSiInterface);
-  G4CMPLogicalBorderSurface* border_SiO2substrate_WSiWire = new G4CMPLogicalBorderSurface("border_SiO2substrate_WSiStrip", phys_SiO2substrate, phys_WSiWire, fSiO2WSiInterface);
+  G4CMPLogicalBorderSurface* border_SiO2substrate_WSiWire = new G4CMPLogicalBorderSurface("border_SiO2substrate_WSiStrip", phys_Sisubstrate, phys_WSiWire, fSiO2WSiInterface);
 
   //Set up sensitive detector
   //  -> Make EVERYTHING sensitive detector to ensure hits get registered, and then filter 
@@ -674,14 +558,295 @@ void DetectorConstruction::SetupGeometry()
   SDman->AddNewDetector(fSuperconductorSensitivity);
   // SNSPD wire
   logic_WSiWire->SetSensitiveDetector(fSuperconductorSensitivity);
-  // SNSPD wire cap
-  logic_aSiWire->SetSensitiveDetector(fSuperconductorSensitivity);
-  // SNSPD SiO2 toplayer
-  logic_SiO2toplayer->SetSensitiveDetector(fSuperconductorSensitivity);
-  // SNSPD SiO2 substrate
-  logic_SiO2substrate->SetSensitiveDetector(fSuperconductorSensitivity);
   // SNSPD SiO2 substrate
   logic_Sisubstrate->SetSensitiveDetector(fSuperconductorSensitivity);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//   //-------------------------------------------------------------------------------------------------------------------
+//   //Then, set up the Si substrate.
+//   G4Box* solid_Sisubstrate = new G4Box("solid_Sisubstrate", dp_SisubstrateDimX/2, dp_SisubstrateDimY/2, dp_SisubstrateDimZ/2);
+//   G4LogicalVolume* logic_Sisubstrate = new G4LogicalVolume(solid_Sisubstrate, fSi, "logic_Sisubstrate");
+// 	logic_Sisubstrate->SetUserLimits(substrateUserLimits);
+// 	G4VPhysicalVolume* phys_Sisubstrate = new G4PVPlacement(
+// 		0,
+// 		G4ThreeVector(0., 0., dp_sensorDimZ-dp_SisubstrateDimZ/2),
+// 		logic_Sisubstrate,
+// 		"phys_Sisubstrate",
+// 		logicWorld,
+// 		false,
+// 		0,
+// 		true
+// 	);
+
+//   //Set up the G4CMP silicon lattice information using the G4LatticeManager
+//   // G4LatticeManager gives physics processes access to lattices by volume
+//   G4LatticeManager* LM = G4LatticeManager::GetLatticeManager();
+//   G4LatticeLogical* logic_SiLattice = LM->LoadLattice(fSi, "Si");
+//   // G4LatticePhysical assigns G4LatticeLogical a physical orientation
+//   G4LatticePhysical* phys_SiLattice = new G4LatticePhysical(logic_SiLattice);
+//   phys_SiLattice->SetMillerOrientation(1,0,0); 
+//   LM->RegisterLattice(phys_Sisubstrate, phys_SiLattice);
+  
+//   G4VisAttributes* SiVisAtt= new G4VisAttributes(G4Colour(0.4,0.4,0.4));
+//   SiVisAtt->SetVisibility(true);
+//   logic_Sisubstrate->SetVisAttributes(SiVisAtt);
+
+//   //Set up border surfaces
+//   G4CMPLogicalBorderSurface* border_Si_Cu = new G4CMPLogicalBorderSurface("border_Si_Cu", phys_Sisubstrate, physCu2, fSiCuInterface);
+//   G4CMPLogicalBorderSurface* border_Cu_Si = new G4CMPLogicalBorderSurface("border_Cu_Si", physCu2, phys_Sisubstrate, fCuSiInterface);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//   //-------------------------------------------------------------------------------------------------------------------
+//   //Next, setup the SiO2 substrate
+//   G4Box* solid_SiO2substrate = new G4Box("solid_SiO2substrate", dp_SiO2substrateDimX/2, dp_SiO2substrateDimY/2, dp_SiO2substrateDimZ/2);
+//   G4LogicalVolume* logic_SiO2substrate = new G4LogicalVolume(solid_SiO2substrate, fSiO2, "logic_SiO2substrate");
+// 	logic_SiO2substrate->SetUserLimits(substrateUserLimits);
+// 	G4VPhysicalVolume* phys_SiO2substrate = new G4PVPlacement(
+// 		0,
+// 		G4ThreeVector(0., 0., dp_sensorDimZ-dp_SisubstrateDimZ-dp_SiO2substrateDimZ/2),
+// 		logic_SiO2substrate,
+// 		"phys_SiO2substrate",
+// 		logicWorld,
+// 		false,
+// 		0,
+// 		true
+// 	);
+  
+//   // G4LatticeLogical* logic_SiO2Lattice = LM->LoadLattice(fSiO2, "SiO2");
+//   G4LatticeLogical* logic_SiO2Lattice = LM->LoadLattice(fSiO2, "Si");
+//   G4LatticePhysical* phys_SiO2substrateLattice = new G4LatticePhysical(logic_SiO2Lattice);
+//   phys_SiO2substrateLattice->SetMillerOrientation(1,0,0); 
+//   LM->RegisterLattice(phys_SiO2substrate, phys_SiO2substrateLattice);
+
+//   G4VisAttributes* SiO2substrateVisAtt= new G4VisAttributes(G4Colour(0.6,0.6,0.6));
+//   SiO2substrateVisAtt->SetVisibility(true);
+//   logic_SiO2substrate->SetVisAttributes(SiO2substrateVisAtt);
+
+//   //Set up border surfaces
+//   G4CMPLogicalBorderSurface* border_Si_SiO2 = new G4CMPLogicalBorderSurface("border_Si_SiO2", phys_Sisubstrate, phys_SiO2substrate, fSiSiO2Interface);
+//   G4CMPLogicalBorderSurface* border_SiO2_Si = new G4CMPLogicalBorderSurface("border_SiO2_Si", phys_SiO2substrate, phys_Sisubstrate, fSiO2SiInterface);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// //-------------------------------------------------------------------------------------------------------------------
+//   //Finally, setup the SiO2 top layer
+//   G4Box* solid_SiO2toplayer = new G4Box("solid_SiO2toplayer", dp_SiO2toplayerDimX/2, dp_SiO2toplayerDimY/2, dp_SiO2toplayerDimZ/2);
+//   G4LogicalVolume* logic_SiO2toplayer = new G4LogicalVolume(solid_SiO2toplayer, fSiO2, "logic_SiO2toplayer");
+// 	logic_SiO2toplayer->SetUserLimits(substrateUserLimits);
+// 	G4VPhysicalVolume* phys_SiO2toplayer = new G4PVPlacement(
+// 		0,
+// 		G4ThreeVector(0., 0., dp_sensorDimZ-dp_SisubstrateDimZ-dp_SiO2substrateDimZ-dp_SiO2toplayerDimZ/2),
+// 		logic_SiO2toplayer,
+// 		"phys_SiO2toplayer",
+// 		logicWorld,
+// 		false,
+// 		0,
+// 		true
+// 	);
+
+//   G4LatticePhysical* phys_SiO2toplayerLattice = new G4LatticePhysical(logic_SiO2Lattice);
+//   phys_SiO2toplayerLattice->SetMillerOrientation(1,0,0);
+//   LM->RegisterLattice(phys_SiO2toplayer, phys_SiO2toplayerLattice);
+
+//   G4VisAttributes* SiO2toplayerVisAtt= new G4VisAttributes(G4Colour(0.8,0.8,0.8));
+//   SiO2toplayerVisAtt->SetVisibility(true);
+//   logic_SiO2toplayer->SetVisAttributes(SiO2toplayerVisAtt);
+
+//   //Set up border surfaces
+//   G4CMPLogicalBorderSurface* border_SiO2s_SiO2t = new G4CMPLogicalBorderSurface("border_SiO2s_SiO2t", phys_SiO2substrate, phys_SiO2toplayer, fSiO2SiO2Interface);
+//   G4CMPLogicalBorderSurface* border_SiO2t_SiO2s = new G4CMPLogicalBorderSurface("border_SiO2t_SiO2s", phys_SiO2toplayer, phys_SiO2substrate, fSiO2SiO2Interface);
+//   G4CMPLogicalBorderSurface* border_SiO2_vacuum = new G4CMPLogicalBorderSurface("border_SiO2t_vacuum", phys_SiO2toplayer, fWorldPhys, fSiO2VacuumInterface);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//   //-------------------------------------------------------------------------------------------------------------------
+//   //Finally, setup the nanowire strips and establish a sensitivity object
+
+//   G4MultiUnion* solid_WSiWire = new G4MultiUnion("solid_WSiWire");
+//   G4MultiUnion* solid_aSiWire = new G4MultiUnion("solid_aSiWire");
+	
+// 	for (G4int i = 0; i < dp_numStrips; i++) {
+// 		// Position along y for each strip, considering the thickness and the spacing
+// 		G4double strip_y_pos = -(dp_stripDimY / 2) + i * (dp_stripThickness + dp_stripSpacing);
+//     G4double wrap_y_pos = strip_y_pos + (dp_stripThickness / 2) + (dp_stripSpacing / 2);
+//     // G4cout<< " ### wire " << i << ", y_pos = " << strip_y_pos <<G4endl;
+
+//     G4double startAngle = 0.*CLHEP::deg;
+//     G4double endAngle = 180.*CLHEP::deg;
+//     G4double xRot, yRot, zRot, wrapPosX;
+//     if (i % 2 == 0){
+//       xRot = 0.*CLHEP::deg;
+//       yRot = 0.*CLHEP::deg;
+//       zRot = 90.*CLHEP::deg;
+//       wrapPosX = dp_stripDimX / 2;
+//     }
+//     else{
+//       xRot = 0.*CLHEP::deg;
+//       yRot = 0.*CLHEP::deg;
+//       zRot = 270.*CLHEP::deg;
+//       wrapPosX = -dp_stripDimX / 2;
+//     }
+
+//     G4bool last_wire = false;
+//     if (i + 1 == dp_numStrips){
+//       last_wire = true;
+//     }
+
+// 		// Create a strip solid with specified dimensions
+// 		G4Box* solid_WSiStrip = new G4Box("solid_strip_" + std::to_string(i), dp_stripDimX / 2, dp_stripThickness / 2, dp_stripDimZ / 2);
+//     G4Transform3D tr_WSiStrip = G4Transform3D(G4RotationMatrix(0, 0, 0), G4ThreeVector(0, strip_y_pos, +dp_SiO2toplayerDimZ/2 - dp_stripDimZ/2));
+//     solid_WSiWire->AddNode(*solid_WSiStrip, tr_WSiStrip);
+
+// 		G4Box* solid_aSiStrip = new G4Box("solid_strip_" + std::to_string(i), dp_stripDimX / 2, dp_stripThickness / 2, dp_stripDimZ / 2);
+//     G4Transform3D tr_aSiStrip = G4Transform3D(G4RotationMatrix(0, 0, 0), G4ThreeVector(0, strip_y_pos, +dp_SiO2toplayerDimZ/2 - dp_stripDimZ - dp_stripDimZ/2));
+//     solid_aSiWire->AddNode(*solid_aSiStrip, tr_aSiStrip);
+
+//     if (!last_wire){
+//       G4Tubs* solid_WSiWrap = new G4Tubs("solid_strip_" + std::to_string(i), dp_stripWrapInnerRadius, dp_stripWrapOuterRadius, dp_stripDimZ / 2, startAngle, endAngle);
+//       G4Transform3D tr_WSiWrap = G4Transform3D(G4RotationMatrix(xRot, yRot, zRot), G4ThreeVector(wrapPosX, wrap_y_pos, +dp_SiO2toplayerDimZ/2 - dp_stripDimZ/2));
+//       solid_WSiWire->AddNode(*solid_WSiWrap, tr_WSiWrap);
+
+//       G4Tubs* solid_aSiWrap = new G4Tubs("solid_strip_" + std::to_string(i), dp_stripWrapInnerRadius, dp_stripWrapOuterRadius, dp_stripDimZ / 2, startAngle, endAngle);
+//       G4Transform3D tr_aSiWrap = G4Transform3D(G4RotationMatrix(xRot, yRot, zRot), G4ThreeVector(wrapPosX, wrap_y_pos, +dp_SiO2toplayerDimZ/2 - dp_stripDimZ - dp_stripDimZ/2));
+//       solid_aSiWire->AddNode(*solid_aSiWrap, tr_aSiWrap);
+// 	  }
+//   }
+
+//   solid_WSiWire->Voxelize();
+//   solid_aSiWire->Voxelize();
+
+//   G4LogicalVolume* logic_WSiWire = new G4LogicalVolume(solid_WSiWire, fWSi, "logic_WSiWire");
+//   G4LogicalVolume* logic_aSiWire = new G4LogicalVolume(solid_aSiWire, faSi, "logic_aSiWire");
+
+//   logic_WSiWire->SetUserLimits(wireUserLimits);
+//   logic_aSiWire->SetUserLimits(wireUserLimits);
+
+//   G4VisAttributes* WSiVisAtt= new G4VisAttributes(G4Colour(0.0,1.0,1.0,0.5));
+//   WSiVisAtt->SetVisibility(true);
+//   logic_WSiWire->SetVisAttributes(WSiVisAtt);
+
+//   G4VisAttributes* aSiVisAtt= new G4VisAttributes(G4Colour(1.0,0.0,1.0,0.3));
+//   aSiVisAtt->SetVisibility(true);
+//   logic_aSiWire->SetVisAttributes(aSiVisAtt);
+
+//   G4VPhysicalVolume* phys_WSiWire = new G4PVPlacement(
+// 		0,
+// 		G4ThreeVector(0., 0., 0.),
+// 		logic_WSiWire,
+// 		"phys_WSiWire",
+// 		logic_SiO2toplayer,
+// 		false,
+// 		0,
+// 		true
+// 	);
+
+//   G4VPhysicalVolume* phys_aSiWire = new G4PVPlacement(
+// 		0,
+// 		G4ThreeVector(0., 0., 0.),
+// 		logic_aSiWire,
+// 		"phys_aSiWire",
+// 		logic_SiO2toplayer,
+// 		false,
+// 		0,
+// 		true
+// 	);
+
+//   // G4LatticeLogical* logic_WSiLattice = LM->LoadLattice(fWSi, "WSi");
+//   G4LatticeLogical* logic_WSiLattice = LM->LoadLattice(fWSi, "Si");
+//   G4LatticePhysical* phys_WSiLattice = new G4LatticePhysical(logic_WSiLattice);
+//   phys_WSiLattice->SetMillerOrientation(1,0,0);
+//   LM->RegisterLattice(phys_WSiWire, phys_WSiLattice);
+
+//   // G4LatticeLogical* logic_aSiLattice = LM->LoadLattice(faSi, "aSi");
+//   G4LatticeLogical* logic_aSiLattice = LM->LoadLattice(faSi, "Si");
+//   G4LatticePhysical* phys_aSiLattice = new G4LatticePhysical(logic_aSiLattice);
+//   phys_aSiLattice->SetMillerOrientation(1,0,0);
+//   LM->RegisterLattice(phys_aSiWire, phys_aSiLattice);
+
+//   //Set up border surfaces
+//   G4CMPLogicalBorderSurface* border_SiO2_aSiWire = new G4CMPLogicalBorderSurface("border_SiO2_aSiStrip", phys_SiO2toplayer, phys_aSiWire, fSiO2aSiInterface);
+//   G4CMPLogicalBorderSurface* border_aSiWire_SiO2 = new G4CMPLogicalBorderSurface("border_aSiStrip_SiO2", phys_aSiWire, phys_SiO2toplayer, faSiSiO2Interface);
+
+//   G4CMPLogicalBorderSurface* border_aSiWire_WSiWire = new G4CMPLogicalBorderSurface("border_aSiStrip_WSiStrip", phys_aSiWire, phys_WSiWire, faSiWSiInterface);
+//   G4CMPLogicalBorderSurface* border_SiO2_WSiWire = new G4CMPLogicalBorderSurface("border_SiO2_WSiStrip", phys_SiO2toplayer, phys_WSiWire, fSiO2WSiInterface);
+//   G4CMPLogicalBorderSurface* border_SiO2substrate_WSiWire = new G4CMPLogicalBorderSurface("border_SiO2substrate_WSiStrip", phys_SiO2substrate, phys_WSiWire, fSiO2WSiInterface);
+
+//   //Set up sensitive detector
+//   //  -> Make EVERYTHING sensitive detector to ensure hits get registered, and then filter 
+//   //       out only hits that occur near the SNSPD wire
+//   G4SDManager* SDman = G4SDManager::GetSDMpointer();
+//   fSuperconductorSensitivity = new SensitiveDetector("SensitiveDetector", PassArgs);
+//   SDman->AddNewDetector(fSuperconductorSensitivity);
+//   // SNSPD wire
+//   logic_WSiWire->SetSensitiveDetector(fSuperconductorSensitivity);
+//   // SNSPD wire cap
+//   logic_aSiWire->SetSensitiveDetector(fSuperconductorSensitivity);
+//   // SNSPD SiO2 toplayer
+//   logic_SiO2toplayer->SetSensitiveDetector(fSuperconductorSensitivity);
+//   // SNSPD SiO2 substrate
+//   logic_SiO2substrate->SetSensitiveDetector(fSuperconductorSensitivity);
+//   // SNSPD SiO2 substrate
+//   logic_Sisubstrate->SetSensitiveDetector(fSuperconductorSensitivity);
 
   // /control/execute ../SNSPDHighEnergy/G4Macros/vis.mac
 }
