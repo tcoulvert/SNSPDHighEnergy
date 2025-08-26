@@ -26,7 +26,8 @@ public:
         G4double energyDeposit;
         G4ThreeVector position;
         G4double time;
-        G4String particleType;
+        // G4String particleType;
+        G4int particleType;
     };
 
     // Getter for the output name
@@ -37,7 +38,8 @@ public:
 
     // Function to add a hit record to the vector
     void AddHitRecord(const G4double energyDeposit, const G4ThreeVector& position, 
-                      const G4double time, const G4String& particleType);
+                    //   const G4double time, const G4String& particleType);
+                      const G4double time, const G4int intParticleType);
 
 	// Function to store a G4ThreeVector position
 	void StorePosition(const G4ThreeVector& position);
@@ -107,7 +109,7 @@ public:
     
 private:
     // Member variables
-    G4String OutName = "sim_output_aWSi_0p9_aCu_0p1";
+    G4String OutName = "sim_output_aWSi_0p1_aCu_0p1";
     G4String MacName;
     G4int runevt = 0;
     bool Allrecord = false;

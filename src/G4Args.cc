@@ -175,7 +175,8 @@ void MyG4Args::AddToEnergyByParticleAndEvent(const G4String& particleType, G4dou
 
 // Create a new hit record and append it to the hitRecords vector
 void MyG4Args::AddHitRecord(const G4double energyDeposit, const G4ThreeVector& position, 
-                            const G4double time, const G4String& particleType) {
+                            // const G4double time, const G4String& particleType) {
+                            const G4double time, const G4int particleType) {
     HitData newHit = {energyDeposit, position, time, particleType};
     hitRecords.push_back(newHit);
 }

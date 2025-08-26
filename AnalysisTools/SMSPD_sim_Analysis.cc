@@ -14,6 +14,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
+#include <string>
 
 //ROOT includes
 #include "TH2F.h"
@@ -24,6 +25,7 @@
 #include "TColor.h"
 #include "TCanvas.h"
 #include "TLegend.h"
+#include "TString.h"
 
 //---------------------------------------------------------------------------------------
 // Define a set of structs for use interpreting the output from G4CMP
@@ -55,29 +57,30 @@ void AnalyzeProtonEvent(std::string hitsFilename)
   TTreeReaderValue<Double_t> myPositionY(myReader, "PositionY");
   TTreeReaderValue<Double_t> myPositionZ(myReader, "PositionZ");
   TTreeReaderValue<Double_t> myTime(myReader, "Time");
-  TTreeReaderArray<std::string> myParticleType(myReader, "ParticleType");
+  TTreeReaderValue<Int_t> myParticleType(myReader, "ParticleType");
+  std::cout << "Finished myReader." << std::endl;
   
   //Define a number of histograms for the hits
   // eDep
-  int eDepMinLog = -4;
-  int eDepMaxLog = 10;
+  double eDepMin = 0.;
+  double eDepMax = 0.08;
   int nBinsEDep = 200;
   // X, Y, Z
   double sensorMinX = -0.5;
   double sensorMaxX = 0.5;
   double sensorMinY = -0.5;
   double sensorMaxY = 0.5;
-  double sensorMinZ = -2.;
-  double sensorMaxZ = 0.;
+  double sensorMinZ = -1.6;
+  double sensorMaxZ = -0.9;
   int nBinsX = 200;
   int nBinsY = 200;
-  int nBinsZ = 200;
+  int nBinsZ = 210;
   // Time
   double minTime = 0.;
-  double maxTime = 200.;
+  double maxTime = 20.;
   int nBinsTime = 200.;
   // Proton
-  TH1F* proton_eDep = new TH1F("proton_eDep", "Hit EDeps; log10(eDep[eV]); nEvents",nBinsEDep,eDepMinLog,eDepMaxLog);
+  TH1F* proton_eDep = new TH1F("proton_eDep", "Hit EDeps; eDep [eV]; nEvents",nBinsEDep,eDepMin,eDepMax);
   TH2F* proton_hitXY = new TH2F("proton_hitXY","XY Locations of proton Hits; X [um]; Y [um]; NHits/bin",nBinsX,sensorMinX,sensorMaxX,nBinsY,sensorMinY,sensorMaxY);
   TH2F* proton_hitYZ = new TH2F("proton_hitYZ","YZ Locations of proton Hits; Y [um]; Z [um]; NHits/bin",nBinsY,sensorMinY,sensorMaxY,nBinsZ,sensorMinZ,sensorMaxZ);
   TH2F* proton_hitXZ = new TH2F("proton_hitXZ","XZ Locations of proton Hits; X [um]; Z [um]; NHits/bin",nBinsX,sensorMinX,sensorMaxX,nBinsZ,sensorMinZ,sensorMaxZ);
@@ -85,7 +88,7 @@ void AnalyzeProtonEvent(std::string hitsFilename)
   proton_eDep->SetFillColor(kRed);
   proton_hitTime->SetFillColor(kRed);
   // Phonon (all types)
-  TH1F* phonon_eDep = new TH1F("phonon_eDep", "Hit EDeps; log10(eDep[eV]); nEvents",nBinsEDep,eDepMinLog,eDepMaxLog);
+  TH1F* phonon_eDep = new TH1F("phonon_eDep", "Hit EDeps; eDep [eV]; nEvents",nBinsEDep,eDepMin,eDepMax);
   TH2F* phonon_hitXY = new TH2F("phonon_hitXY","XY Locations of phonon Hits; X [um]; Y [um]; NHits/bin",nBinsX,sensorMinX,sensorMaxX,nBinsY,sensorMinY,sensorMaxY);
   TH2F* phonon_hitYZ = new TH2F("phonon_hitYZ","YZ Locations of phonon Hits; Y [um]; Z [um]; NHits/bin",nBinsY,sensorMinY,sensorMaxY,nBinsZ,sensorMinZ,sensorMaxZ);
   TH2F* phonon_hitXZ = new TH2F("phonon_hitXZ","XZ Locations of phonon Hits; X [um]; Z [um]; NHits/bin",nBinsX,sensorMinX,sensorMaxX,nBinsZ,sensorMinZ,sensorMaxZ);
@@ -93,7 +96,7 @@ void AnalyzeProtonEvent(std::string hitsFilename)
   phonon_eDep->SetFillColor(kBlue);
   phonon_hitTime->SetFillColor(kBlue);
   // PhononL
-  TH1F* phononL_eDep = new TH1F("phononL_eDep", "Hit EDeps; log10(eDep[eV]); nEvents",nBinsEDep,eDepMinLog,eDepMaxLog);
+  TH1F* phononL_eDep = new TH1F("phononL_eDep", "Hit EDeps; eDep [eV]; nEvents",nBinsEDep,eDepMin,eDepMax);
   TH2F* phononL_hitXY = new TH2F("phononL_hitXY","XY Locations of phononL Hits; X [um]; Y [um]; NHits/bin",nBinsX,sensorMinX,sensorMaxX,nBinsY,sensorMinY,sensorMaxY);
   TH2F* phononL_hitYZ = new TH2F("phononL_hitYZ","YZ Locations of phononL Hits; Y [um]; Z [um]; NHits/bin",nBinsY,sensorMinY,sensorMaxY,nBinsZ,sensorMinZ,sensorMaxZ);
   TH2F* phononL_hitXZ = new TH2F("phononL_hitXZ","XZ Locations of phononL Hits; X [um]; Z [um]; NHits/bin",nBinsX,sensorMinX,sensorMaxX,nBinsZ,sensorMinZ,sensorMaxZ);
@@ -101,7 +104,7 @@ void AnalyzeProtonEvent(std::string hitsFilename)
   phononL_eDep->SetFillColor(kMagenta);
   phononL_hitTime->SetFillColor(kMagenta);
   // PhononTS
-  TH1F* phononTS_eDep = new TH1F("phononTS_eDep", "Hit EDeps; log10(eDep[eV]); nEvents",nBinsEDep,eDepMinLog,eDepMaxLog);
+  TH1F* phononTS_eDep = new TH1F("phononTS_eDep", "Hit EDeps; eDep [eV]; nEvents",nBinsEDep,eDepMin,eDepMax);
   TH2F* phononTS_hitXY = new TH2F("phononTS_hitXY","XY Locations of phononTS Hits; X [um]; Y [um]; NHits/bin",nBinsX,sensorMinX,sensorMaxX,nBinsY,sensorMinY,sensorMaxY);
   TH2F* phononTS_hitYZ = new TH2F("phononTS_hitYZ","YZ Locations of phononTS Hits; Y [um]; Z [um]; NHits/bin",nBinsY,sensorMinY,sensorMaxY,nBinsZ,sensorMinZ,sensorMaxZ);
   TH2F* phononTS_hitXZ = new TH2F("phononTS_hitXZ","XZ Locations of phononTS Hits; X [um]; Z [um]; NHits/bin",nBinsX,sensorMinX,sensorMaxX,nBinsZ,sensorMinZ,sensorMaxZ);
@@ -109,39 +112,39 @@ void AnalyzeProtonEvent(std::string hitsFilename)
   phononTS_eDep->SetFillColor(kCyan);
   phononTS_hitTime->SetFillColor(kCyan);
   // PhononTF
-  TH1F* phononTF_eDep = new TH1F("phononTF_eDep", "Hit EDeps; log10(eDep[eV]); nEvents",nBinsEDep,eDepMinLog,eDepMaxLog);
+  TH1F* phononTF_eDep = new TH1F("phononTF_eDep", "Hit EDeps; eDep [eV]; nEvents",nBinsEDep,eDepMin,eDepMax);
   TH2F* phononTF_hitXY = new TH2F("phononTF_hitXY","XY Locations of phononTF Hits; X [um]; Y [um]; NHits/bin",nBinsX,sensorMinX,sensorMaxX,nBinsY,sensorMinY,sensorMaxY);
   TH2F* phononTF_hitYZ = new TH2F("phononTF_hitYZ","YZ Locations of phononTF Hits; Y [um]; Z [um]; NHits/bin",nBinsY,sensorMinY,sensorMaxY,nBinsZ,sensorMinZ,sensorMaxZ);
   TH2F* phononTF_hitXZ = new TH2F("phononTF_hitXZ","XZ Locations of phononTF Hits; X [um]; Z [um]; NHits/bin",nBinsX,sensorMinX,sensorMaxX,nBinsZ,sensorMinZ,sensorMaxZ);
   TH1F* phononTF_hitTime = new TH1F("phononTF_hitTime", "Hit Global Time; Time [ns]; nEvents",nBinsTime,minTime,maxTime);
   phononTF_eDep->SetFillColor(kYellow);
   phononTF_hitTime->SetFillColor(kYellow);
+  std::cout << "Finished making Hists." << std::endl;
 
   // Loop over all entries of the TTree.
   while (myReader.Next()) {
     // Just access the data as if myEnergyDeposit, etc were iterators (note the '*'
     //   in front of them):
-    // std::cout << myParticleType << endl;
-    if ((myParticleType).find("phonon") != std::string::npos) {
+    if (*myParticleType > 0) {
       phonon_eDep->Fill(*myEnergyDeposit);
       phonon_hitXY->Fill(*myPositionX, *myPositionY);
       phonon_hitYZ->Fill(*myPositionY, *myPositionZ);
       phonon_hitXZ->Fill(*myPositionX, *myPositionZ);
       phonon_hitTime->Fill(*myTime);
 
-      if ((myParticleType).find("phononL") != std::string::npos) {
+      if (*myParticleType == 1) {
         phononL_eDep->Fill(*myEnergyDeposit);
         phononL_hitXY->Fill(*myPositionX, *myPositionY);
         phononL_hitYZ->Fill(*myPositionY, *myPositionZ);
         phononL_hitXZ->Fill(*myPositionX, *myPositionZ);
         phononL_hitTime->Fill(*myTime);
-      } else if ((myParticleType).find("phononTS") != std::string::npos) {
+      } else if (*myParticleType == 2) {
         phononTS_eDep->Fill(*myEnergyDeposit);
         phononTS_hitXY->Fill(*myPositionX, *myPositionY);
         phononTS_hitYZ->Fill(*myPositionY, *myPositionZ);
         phononTS_hitXZ->Fill(*myPositionX, *myPositionZ);
         phononTS_hitTime->Fill(*myTime);
-      } else if ((myParticleType).find("phononTF") != std::string::npos) {
+      } else if (*myParticleType == 3) {
         phononTF_eDep->Fill(*myEnergyDeposit);
         phononTF_hitXY->Fill(*myPositionX, *myPositionY);
         phononTF_hitYZ->Fill(*myPositionY, *myPositionZ);
@@ -157,29 +160,37 @@ void AnalyzeProtonEvent(std::string hitsFilename)
     }
     
   }
-  fIn->Close();
+  std::cout << "Finished filling Hists." << std::endl;
+  
 
   //Define an outfile
   // std::string analysisFilename = hitsFilename.subtr(hitsFilename.rfind("/")+1, hitsFilename.rfind(".") - (hitsFilename.rfind("/")+1)) + "_AnalysisOutput.root"
   // TFile * fOut = new TFile(analysisFilename,"RECREATE");
   // std::cout << "Saving output into file: " << analysisFilename << std::endl;
 
+
   // Make proton-phonon eDep plots
   TCanvas* eDeps1 = new TCanvas();
   proton_eDep->Draw();
   phonon_eDep->Draw("SAME");
+  eDeps1->SetLogy();
   TLegend* eDeps1_legend = new TLegend(0.7,0.7,0.9,0.9);
   eDeps1_legend->AddEntry(proton_eDep,"Proton eDep per-hit","f");
   eDeps1_legend->AddEntry(phonon_eDep,"All phonon eDep per-hit","f");
   eDeps1_legend->Draw();
   eDeps1->SaveAs(("proton_phonon_eDeps_"+hitsFilename.substr(hitsFilename.find(base_filename)+base_filename.length(), hitsFilename.rfind(".")-hitsFilename.find(base_filename)+base_filename.length())+".pdf").c_str());
   eDeps1->Close();
+  delete eDeps1_legend;
+  delete eDeps1;
+  delete proton_eDep;
+  delete phonon_eDep;
 
   // Make split phonon eDep plots
   TCanvas* eDeps2 = new TCanvas();
   phononL_eDep->Draw();
   phononTS_eDep->Draw("SAME");
   phononTF_eDep->Draw("SAME");
+  eDeps2->SetLogy();
   TLegend* eDeps2_legend = new TLegend(0.7,0.7,0.9,0.9);
   eDeps2_legend->AddEntry(phononL_eDep,"PhononL eDep per-hit","f");
   eDeps2_legend->AddEntry(phononTS_eDep,"PhononTS eDep per-hit","f");
@@ -187,85 +198,116 @@ void AnalyzeProtonEvent(std::string hitsFilename)
   eDeps2_legend->Draw();
   eDeps2->SaveAs(("splitPhonon_eDeps_"+hitsFilename.substr(hitsFilename.find(base_filename)+base_filename.length(), hitsFilename.rfind(".")-hitsFilename.find(base_filename)+base_filename.length())+".pdf").c_str());
   eDeps2->Close();
+  delete eDeps2_legend;
+  delete eDeps2;
+  delete phononL_eDep;
+  delete phononTS_eDep;
+  delete phononTF_eDep;
 
-  // Make proton-phonon Time plots
-  TCanvas* hitTimes1 = new TCanvas();
-  proton_eDep->Draw();
-  phonon_eDep->Draw("SAME");
-  TLegend* hitTimes1_legend = new TLegend(0.7,0.7,0.9,0.9);
-  hitTimes1_legend->AddEntry(proton_eDep,"Proton","f");
-  hitTimes1_legend->AddEntry(phonon_eDep,"All phonon","f");
-  hitTimes1_legend->Draw();
-  eDeps1->SaveAs(("proton_phonon_hitTimes_"+hitsFilename.substr(hitsFilename.find(base_filename)+base_filename.length(), hitsFilename.rfind(".")-hitsFilename.find(base_filename)+base_filename.length())+".pdf").c_str());
-  hitTimes1->Close();
+  // // Make proton-phonon Time plots
+  // TCanvas* hitTimes1 = new TCanvas();
+  // proton_hitTime->Draw();
+  // phonon_hitTime->Draw("SAME");
+  // hitTimes1->SetLogy();
+  // TLegend* hitTimes1_legend = new TLegend(0.7,0.7,0.9,0.9);
+  // hitTimes1_legend->AddEntry(proton_hitTime,"Proton","f");
+  // hitTimes1_legend->AddEntry(phonon_hitTime,"All phonon","f");
+  // hitTimes1_legend->Draw();
+  // eDeps1->SaveAs(("proton_phonon_hitTimes_"+hitsFilename.substr(hitsFilename.find(base_filename)+base_filename.length(), hitsFilename.rfind(".")-hitsFilename.find(base_filename)+base_filename.length())+".pdf").c_str());
+  // hitTimes1->Close();
+  // delete hitTimes1_legend;
+  // delete hitTimes1;
+  // delete proton_hitTime;
+  // delete phonon_hitTime;
 
-  // Make split phonon Time plots
-  TCanvas* hitTimes2 = new TCanvas();
-  phononL_hitTime->Draw();
-  phononTS_hitTime->Draw("SAME");
-  phononTF_hitTime->Draw("SAME");
-  TLegend* hitTimes2_legend = new TLegend(0.7,0.7,0.9,0.9);
-  hitTimes2_legend->AddEntry(phononL_hitTime,"PhononL","f");
-  hitTimes2_legend->AddEntry(phononTS_hitTime,"PhononTS","f");
-  hitTimes2_legend->AddEntry(phononTF_hitTime,"PhononTF","f");
-  hitTimes2_legend->Draw();
-  eDeps2->SaveAs(("splitPhonon_hitTimes_"+hitsFilename.substr(hitsFilename.find(base_filename)+base_filename.length(), hitsFilename.rfind(".")-hitsFilename.find(base_filename)+base_filename.length())+".pdf").c_str());
-  hitTimes2->Close();
+  // // Make split phonon Time plots
+  // TCanvas* hitTimes2 = new TCanvas();
+  // phononL_hitTime->Draw();
+  // phononTS_hitTime->Draw("SAME");
+  // phononTF_hitTime->Draw("SAME");
+  // hitTimes2->SetLogy();
+  // TLegend* hitTimes2_legend = new TLegend(0.7,0.7,0.9,0.9);
+  // hitTimes2_legend->AddEntry(phononL_hitTime,"PhononL","f");
+  // hitTimes2_legend->AddEntry(phononTS_hitTime,"PhononTS","f");
+  // hitTimes2_legend->AddEntry(phononTF_hitTime,"PhononTF","f");
+  // hitTimes2_legend->Draw();
+  // eDeps2->SaveAs(("splitPhonon_hitTimes_"+hitsFilename.substr(hitsFilename.find(base_filename)+base_filename.length(), hitsFilename.rfind(".")-hitsFilename.find(base_filename)+base_filename.length())+".pdf").c_str());
+  // hitTimes2->Close();
+  // delete hitTimes2_legend;
+  // delete hitTimes2;
+  // delete phononL_hitTime;
+  // delete phononTS_hitTime;
+  // delete phononTF_hitTime;
   
-  // Make pos plots
-  TCanvas* pos = new TCanvas();
-  // Proton
-  proton_hitXY->Draw();
-  pos->SaveAs(("protonXY_"+hitsFilename.substr(hitsFilename.find(base_filename)+base_filename.length(), hitsFilename.rfind(".")-hitsFilename.find(base_filename)+base_filename.length())+".pdf").c_str());
-  pos->Clear();
-  proton_hitYZ->Draw();
-  pos->SaveAs(("protonYZ_"+hitsFilename.substr(hitsFilename.find(base_filename)+base_filename.length(), hitsFilename.rfind(".")-hitsFilename.find(base_filename)+base_filename.length())+".pdf").c_str());
-  pos->Clear();
-  proton_hitXZ->Draw();
-  pos->SaveAs(("protonXZ_"+hitsFilename.substr(hitsFilename.find(base_filename)+base_filename.length(), hitsFilename.rfind(".")-hitsFilename.find(base_filename)+base_filename.length())+".pdf").c_str());
-  pos->Clear();
-  // Phonon
-  phonon_hitXY->Draw();
-  pos->SaveAs(("phononXY_"+hitsFilename.substr(hitsFilename.find(base_filename)+base_filename.length(), hitsFilename.rfind(".")-hitsFilename.find(base_filename)+base_filename.length())+".pdf").c_str());
-  pos->Clear();
-  phonon_hitYZ->Draw();
-  pos->SaveAs(("phononYZ_"+hitsFilename.substr(hitsFilename.find(base_filename)+base_filename.length(), hitsFilename.rfind(".")-hitsFilename.find(base_filename)+base_filename.length())+".pdf").c_str());
-  pos->Clear();
-  phonon_hitXZ->Draw();
-  pos->SaveAs(("phononXZ_"+hitsFilename.substr(hitsFilename.find(base_filename)+base_filename.length(), hitsFilename.rfind(".")-hitsFilename.find(base_filename)+base_filename.length())+".pdf").c_str());
-  pos->Clear();
-  // PhononL
-  phononL_hitXY->Draw();
-  pos->SaveAs(("phononLXY_"+hitsFilename.substr(hitsFilename.find(base_filename)+base_filename.length(), hitsFilename.rfind(".")-hitsFilename.find(base_filename)+base_filename.length())+".pdf").c_str());
-  pos->Clear();
-  phononL_hitYZ->Draw();
-  pos->SaveAs(("phononLYZ_"+hitsFilename.substr(hitsFilename.find(base_filename)+base_filename.length(), hitsFilename.rfind(".")-hitsFilename.find(base_filename)+base_filename.length())+".pdf").c_str());
-  pos->Clear();
-  phononL_hitXZ->Draw();
-  pos->SaveAs(("phononLXZ_"+hitsFilename.substr(hitsFilename.find(base_filename)+base_filename.length(), hitsFilename.rfind(".")-hitsFilename.find(base_filename)+base_filename.length())+".pdf").c_str());
-  pos->Clear();
-  // PhononTS
-  phononTS_hitXY->Draw();
-  pos->SaveAs(("phononTSXY_"+hitsFilename.substr(hitsFilename.find(base_filename)+base_filename.length(), hitsFilename.rfind(".")-hitsFilename.find(base_filename)+base_filename.length())+".pdf").c_str());
-  pos->Clear();
-  phononTS_hitYZ->Draw();
-  pos->SaveAs(("phononTSYZ_"+hitsFilename.substr(hitsFilename.find(base_filename)+base_filename.length(), hitsFilename.rfind(".")-hitsFilename.find(base_filename)+base_filename.length())+".pdf").c_str());
-  pos->Clear();
-  phononTS_hitXZ->Draw();
-  pos->SaveAs(("phononTSXZ_"+hitsFilename.substr(hitsFilename.find(base_filename)+base_filename.length(), hitsFilename.rfind(".")-hitsFilename.find(base_filename)+base_filename.length())+".pdf").c_str());
-  pos->Clear();
-  // PhononTF
-  phononTF_hitXY->Draw();
-  pos->SaveAs(("phononTFXY_"+hitsFilename.substr(hitsFilename.find(base_filename)+base_filename.length(), hitsFilename.rfind(".")-hitsFilename.find(base_filename)+base_filename.length())+".pdf").c_str());
-  pos->Clear();
-  phononTF_hitYZ->Draw();
-  pos->SaveAs(("phononTFYZ_"+hitsFilename.substr(hitsFilename.find(base_filename)+base_filename.length(), hitsFilename.rfind(".")-hitsFilename.find(base_filename)+base_filename.length())+".pdf").c_str());
-  pos->Clear();
-  phononTF_hitXZ->Draw();
-  pos->SaveAs(("phononTFXZ_"+hitsFilename.substr(hitsFilename.find(base_filename)+base_filename.length(), hitsFilename.rfind(".")-hitsFilename.find(base_filename)+base_filename.length())+".pdf").c_str());
-  pos->Clear();
+  // // Make pos plots
+  // TCanvas* pos = new TCanvas();
+  // // Proton
+  // proton_hitXY->Draw("COLZ");
+  // pos->SaveAs(("protonXY_"+hitsFilename.substr(hitsFilename.find(base_filename)+base_filename.length(), hitsFilename.rfind(".")-hitsFilename.find(base_filename)+base_filename.length())+".pdf").c_str());
+  // pos->Clear();
+  // delete proton_hitXY;
+  // proton_hitYZ->Draw("COLZ");
+  // pos->SaveAs(("protonYZ_"+hitsFilename.substr(hitsFilename.find(base_filename)+base_filename.length(), hitsFilename.rfind(".")-hitsFilename.find(base_filename)+base_filename.length())+".pdf").c_str());
+  // pos->Clear();
+  // delete proton_hitYZ;
+  // proton_hitXZ->Draw("COLZ");
+  // pos->SaveAs(("protonXZ_"+hitsFilename.substr(hitsFilename.find(base_filename)+base_filename.length(), hitsFilename.rfind(".")-hitsFilename.find(base_filename)+base_filename.length())+".pdf").c_str());
+  // pos->Clear();
+  // delete proton_hitXZ;
+  // // Phonon
+  // phonon_hitXY->Draw("COLZ");
+  // pos->SaveAs(("phononXY_"+hitsFilename.substr(hitsFilename.find(base_filename)+base_filename.length(), hitsFilename.rfind(".")-hitsFilename.find(base_filename)+base_filename.length())+".pdf").c_str());
+  // pos->Clear();
+  // delete phonon_hitXY;
+  // phonon_hitYZ->Draw("COLZ");
+  // pos->SaveAs(("phononYZ_"+hitsFilename.substr(hitsFilename.find(base_filename)+base_filename.length(), hitsFilename.rfind(".")-hitsFilename.find(base_filename)+base_filename.length())+".pdf").c_str());
+  // pos->Clear();
+  // delete phonon_hitYZ;
+  // phonon_hitXZ->Draw("COLZ");
+  // pos->SaveAs(("phononXZ_"+hitsFilename.substr(hitsFilename.find(base_filename)+base_filename.length(), hitsFilename.rfind(".")-hitsFilename.find(base_filename)+base_filename.length())+".pdf").c_str());
+  // pos->Clear();
+  // delete phonon_hitXZ;
+  // // PhononL
+  // phononL_hitXY->Draw("COLZ");
+  // pos->SaveAs(("phononLXY_"+hitsFilename.substr(hitsFilename.find(base_filename)+base_filename.length(), hitsFilename.rfind(".")-hitsFilename.find(base_filename)+base_filename.length())+".pdf").c_str());
+  // pos->Clear();
+  // delete phononL_hitXY;
+  // phononL_hitYZ->Draw("COLZ");
+  // pos->SaveAs(("phononLYZ_"+hitsFilename.substr(hitsFilename.find(base_filename)+base_filename.length(), hitsFilename.rfind(".")-hitsFilename.find(base_filename)+base_filename.length())+".pdf").c_str());
+  // pos->Clear();
+  // delete phononL_hitYZ;
+  // phononL_hitXZ->Draw("COLZ");
+  // pos->SaveAs(("phononLXZ_"+hitsFilename.substr(hitsFilename.find(base_filename)+base_filename.length(), hitsFilename.rfind(".")-hitsFilename.find(base_filename)+base_filename.length())+".pdf").c_str());
+  // pos->Clear();
+  // delete phononL_hitXZ;
+  // // PhononTS
+  // phononTS_hitXY->Draw("COLZ");
+  // pos->SaveAs(("phononTSXY_"+hitsFilename.substr(hitsFilename.find(base_filename)+base_filename.length(), hitsFilename.rfind(".")-hitsFilename.find(base_filename)+base_filename.length())+".pdf").c_str());
+  // pos->Clear();
+  // delete phononTS_hitXY;
+  // phononTS_hitYZ->Draw("COLZ");
+  // pos->SaveAs(("phononTSYZ_"+hitsFilename.substr(hitsFilename.find(base_filename)+base_filename.length(), hitsFilename.rfind(".")-hitsFilename.find(base_filename)+base_filename.length())+".pdf").c_str());
+  // pos->Clear();
+  // delete phononTS_hitYZ;
+  // phononTS_hitXZ->Draw("COLZ");
+  // pos->SaveAs(("phononTSXZ_"+hitsFilename.substr(hitsFilename.find(base_filename)+base_filename.length(), hitsFilename.rfind(".")-hitsFilename.find(base_filename)+base_filename.length())+".pdf").c_str());
+  // pos->Clear();
+  // delete phononTS_hitXZ;
+  // // PhononTF
+  // phononTF_hitXY->Draw("COLZ");
+  // pos->SaveAs(("phononTFXY_"+hitsFilename.substr(hitsFilename.find(base_filename)+base_filename.length(), hitsFilename.rfind(".")-hitsFilename.find(base_filename)+base_filename.length())+".pdf").c_str());
+  // pos->Clear();
+  // delete phononTF_hitXY;
+  // phononTF_hitYZ->Draw("COLZ");
+  // pos->SaveAs(("phononTFYZ_"+hitsFilename.substr(hitsFilename.find(base_filename)+base_filename.length(), hitsFilename.rfind(".")-hitsFilename.find(base_filename)+base_filename.length())+".pdf").c_str());
+  // pos->Clear();
+  // delete phononTF_hitYZ;
+  // phononTF_hitXZ->Draw("COLZ");
+  // pos->SaveAs(("phononTFXZ_"+hitsFilename.substr(hitsFilename.find(base_filename)+base_filename.length(), hitsFilename.rfind(".")-hitsFilename.find(base_filename)+base_filename.length())+".pdf").c_str());
+  // pos->Clear();
+  // delete phononTF_hitXZ;
 
-  
+  fIn->Close();
 }
 
 // //---------------------------------------------------------------------------------------

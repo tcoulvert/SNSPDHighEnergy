@@ -22,7 +22,8 @@ RunAction::RunAction(MyG4Args *MainArgs)
     man->CreateNtupleDColumn("PositionY");
     man->CreateNtupleDColumn("PositionZ");
     man->CreateNtupleDColumn("Time");
-    man->CreateNtupleSColumn("ParticleType");    
+    // man->CreateNtupleSColumn("ParticleType");    
+    man->CreateNtupleIColumn("ParticleType");  
     man->FinishNtuple(0); // Finish our first tuple or Ntuple number 0
 			
     // Content of output.root (tuples created only once in the constructor)
@@ -103,7 +104,8 @@ void RunAction::EndOfRunAction(const G4Run* run)
             man->FillNtupleDColumn(0, 2, hit.position.y() / um);   // Position Y
             man->FillNtupleDColumn(0, 3, hit.position.z() / um);   // Position Z
             man->FillNtupleDColumn(0, 4, hit.time);           // Time
-            man->FillNtupleSColumn(0, 5, hit.particleType);   // Particle type
+            // man->FillNtupleSColumn(0, 5, hit.particleType);   // Particle type
+            man->FillNtupleIColumn(0, 5, hit.particleType);   // Particle type
                
             man->AddNtupleRow(0);
 
@@ -117,7 +119,8 @@ void RunAction::EndOfRunAction(const G4Run* run)
             man->FillNtupleDColumn(0, 2, hit.position.y() / um);   // Position Y
             man->FillNtupleDColumn(0, 3, hit.position.z() / um);   // Position Z
             man->FillNtupleDColumn(0, 4, hit.time);           // Time
-            man->FillNtupleSColumn(0, 5, hit.particleType);   // Particle type
+            // man->FillNtupleSColumn(0, 5, hit.particleType);   // Particle type
+            man->FillNtupleIColumn(0, 5, hit.particleType);   // Particle type
             
                
             man->AddNtupleRow(0);

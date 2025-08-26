@@ -57,6 +57,16 @@ G4bool SensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *ROhist)
         G4Track *track = aStep->GetTrack();
         G4ParticleDefinition *particle = track->GetDefinition();
         G4String particleType = particle->GetParticleName();
+        G4int intParticleType;
+        if (particleType.find("proton") != std::string::npos) {
+            intParticleType = 0;
+        } else if (particleType.find("phononL") != std::string::npos) {
+            intParticleType = 1;
+        } else if (particleType.find("phononTS") != std::string::npos) {
+            intParticleType = 2;
+        } else if (particleType.find("phononTF") != std::string::npos) {
+            intParticleType = 3;
+        }
 
         // G4cout << particleType << G4endl;
         // G4cout << "edep = " << edep / eV << " eV" << G4endl;
@@ -65,7 +75,7 @@ G4bool SensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *ROhist)
         
         
         // Store the hit data
-		PassArgs->AddHitRecord(edep, position, time, particleType);
+		PassArgs->AddHitRecord(edep, position, time, intParticleType);
 
 		// Get the event number
         G4int eventNumber = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();
