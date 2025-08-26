@@ -255,7 +255,7 @@ void DetectorConstruction::SetupGeometry()
     //   -> 
     fSiO2WSiInterface = new G4CMPSurfaceProperty("SiO2WSiInterface",
         1.0, 0.0, 0.0, 0.0,
-        0.9, 1.0, 0.0, 0.0 );
+        0.1, 1.0, 0.0, 0.0 );
     // aSi layer to WSi (interface between superconducting wire and non-superconducting cap) interface
     //   -> 
     faSiWSiInterface = new G4CMPSurfaceProperty("aSiWSiInterface",
